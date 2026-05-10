@@ -83,6 +83,11 @@ public class NotificationService {
             }
 
             int queuedCount = 0;
+            // Inject Brand Assets
+            data.put("brandLogo", client.getLogoUrl() != null ? client.getLogoUrl() : "https://img.icons8.com/color/96/zap.png");
+            data.put("brandColor", client.getPrimaryColor() != null ? client.getPrimaryColor() : "#6366f1");
+            data.put("clientName", client.getName());
+
             for (Template template : templates) {
                 if (shouldSend(user, template.getChannel(), priority)) {
                     String resolvedBody = resolveTemplate(template.getBody(), data);
@@ -108,11 +113,19 @@ public class NotificationService {
                 }
             }
 
-            request.setStatus(queuedCount > 0 ? "COMPLETED" : "COMPLETED"); // Even if 0 queued (prefs), it's a finished request
+            if (queuedCount > 0) {
+                request.setStatus("QUEUED");
+            } else if (templates.isEmpty()) {
+                request.setStatus("FAILED");
+                log.warn("No active templates found for event {}", eventName);
+            } else {
+                // If we found templates but queued 0, it means user suppressed via preferences
+                request.setStatus("SUPPRESSED");
+            }
             requestRepository.save(request);
         } catch (Exception e) {
             log.error("Error processing notification request", e);
-            request.setStatus("FAILED");
+            request.setStatus("ERROR");
             requestRepository.save(request);
         }
     }

@@ -22,9 +22,9 @@ public class EmailSender {
         // MOCK MODE for testing
         if ("test".equals(mailUsername)) {
             log.info("--- MOCK EMAIL START ---");
-            log.info("To: {}", job.getTo());
-            log.info("Subject: {}", job.getSubject());
+            log.info("To: {}, Subject: {}", job.getTo(), job.getSubject());
             log.info("Body: {}", job.getBody());
+            if (job.getAttachmentPath() != null) log.info("Attachment: {}", job.getAttachmentName());
             log.info("--- MOCK EMAIL END ---");
             return true;
         }
@@ -34,7 +34,15 @@ public class EmailSender {
             
             helper.setTo(job.getTo());
             helper.setSubject(job.getSubject());
-            helper.setText(job.getBody(), true); // true = HTML
+            helper.setText(job.getBody(), true); 
+
+            // Handle Attachment
+            if (job.getAttachmentPath() != null) {
+                java.io.File file = new java.io.File(job.getAttachmentPath());
+                if (file.exists()) {
+                    helper.addAttachment(job.getAttachmentName() != null ? job.getAttachmentName() : file.getName(), file);
+                }
+            }
             
             mailSender.send(message);
             log.info("Email sent successfully to {}", job.getTo());

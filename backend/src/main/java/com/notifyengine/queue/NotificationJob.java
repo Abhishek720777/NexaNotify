@@ -19,4 +19,6 @@ public class NotificationJob implements Serializable {
     private String body;
     private int attemptCount;
     private String priority; // HIGH, LOW
+    private String attachmentPath; // Local path to file
+    private String attachmentName; // Name for the recipient
 }

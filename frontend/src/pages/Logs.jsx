@@ -37,7 +37,8 @@ export default function Logs() {
 
   const getStatusBadge = (status) => {
     const map = {
-      COMPLETED: 'success', PROCESSING: 'info', FAILED: 'danger', PARTIALLY_FAILED: 'warning',
+      COMPLETED: 'success', QUEUED: 'info', FAILED: 'danger', PARTIALLY_FAILED: 'warning',
+      SUPPRESSED: 'warning', ERROR: 'danger', PROCESSING: 'info',
       SENT: 'success', PENDING: 'info', RETRYING: 'warning', DEAD: 'danger'
     };
     return `badge ${map[status] || 'info'}`;

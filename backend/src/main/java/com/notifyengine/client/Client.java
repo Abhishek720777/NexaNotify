@@ -49,6 +49,9 @@ public class Client implements UserDetails {
     @Column(nullable = false)
     private boolean isActive = true;
 
+    private String logoUrl;
+    private String primaryColor;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
