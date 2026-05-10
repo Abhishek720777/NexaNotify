@@ -41,9 +41,8 @@ frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
-# =========================
-# Docker & Environment
-# =========================
 *.env
-# (Optional) If you don't want to commit application-local configurations:
-# backend/src/main/resources/application-local.yml
+
+backend/*adminsdk*.json
+backend/firebase-*.json
+backend/*.json.json
