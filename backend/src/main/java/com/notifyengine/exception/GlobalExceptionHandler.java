@@ -13,6 +13,13 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<Map<String, String>> handleAccessDeniedException(Exception e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Access denied. Please login to the dashboard.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleException(Exception e) {
         log.error("Unhandled exception: ", e);
@@ -23,8 +30,8 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(error);
         }
 
-        if (e.getMessage() != null && e.getMessage().contains("Unauthorized")) {
-            error.put("error", "Unauthorized access");
+        if (e.getMessage() != null && (e.getMessage().contains("Unauthorized") || e.getMessage().contains("JWT"))) {
+            error.put("error", "Invalid or expired session. Please login again.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
 

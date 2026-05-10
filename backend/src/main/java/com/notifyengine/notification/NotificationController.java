@@ -2,6 +2,7 @@ package com.notifyengine.notification;
 
 import com.notifyengine.client.Client;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/api/v1/notify")
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationController {
 
     private final NotificationService notificationService;
@@ -26,8 +28,7 @@ public class NotificationController {
             try {
                 notificationService.processNotificationRequest(client, payload);
             } catch (Exception e) {
-                // Log and swallow so caller isn't affected
-                e.printStackTrace();
+                log.error("Async notification processing failed for client {}: {}", client.getId(), e.getMessage(), e);
             }
         });
 
