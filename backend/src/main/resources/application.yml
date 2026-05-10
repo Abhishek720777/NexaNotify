@@ -1,0 +1,61 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: notification-engine
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/notification_engine}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:changeme}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+
+  mail:
+    host: ${SPRING_MAIL_HOST:localhost}
+    port: ${SPRING_MAIL_PORT:2525}
+    username: ${SPRING_MAIL_USERNAME:changeme}
+    password: ${SPRING_MAIL_PASSWORD:changeme}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  freemarker:
+    enabled: false
+
+jwt:
+  secret: ${JWT_SECRET:changeme-changeme-changeme-changeme-changeme}
+  expiration: 86400000
+
+twilio:
+  account-sid: ${TWILIO_ACCOUNT_SID:mock_sid}
+  auth-token: ${TWILIO_AUTH_TOKEN:mock_token}
+  from-number: ${TWILIO_FROM_NUMBER:+1234567890}
+
+firebase:
+  credentials-path: ${FIREBASE_CREDENTIALS_PATH:mock}
+
+rate-limit:
+  requests-per-minute: 100
+
+queue:
+  poll-interval-ms: 1000
