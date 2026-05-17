@@ -216,7 +216,7 @@ export default function Templates() {
                           <img src={formData.logoUrl || 'https://img.icons8.com/color/96/zap.png'} style={{height: '50px', background: '#fff', padding: '5px', borderRadius: '4px'}} alt="Logo" />
                           <div style={{flex: 1}}>
                             <input type="file" onChange={handleFileUpload} accept="image/*" style={{fontSize: '0.75rem'}} />
-                            <p style={{fontSize: '0.7rem', color: '#666', marginTop: '5px'}}>Upload logo to use across this template via \${brandLogo}</p>
+                            <p style={{fontSize: '0.7rem', color: '#666', marginTop: '5px'}}>Upload logo to use across this template via {"${brandLogo}"}</p>
                           </div>
                         </div>
                       </div>
@@ -226,7 +226,7 @@ export default function Templates() {
                           <input type="color" value={formData.primaryColor} onChange={(e) => setFormData({...formData, primaryColor: e.target.value})} style={{height: '50px', width: '100px', padding: '0'}} />
                           <input type="text" value={formData.primaryColor} onChange={(e) => setFormData({...formData, primaryColor: e.target.value})} style={{flex: 1}} />
                         </div>
-                        <p style={{fontSize: '0.7rem', color: '#666', marginTop: '5px'}}>Use this color in your styles via \${brandColor}</p>
+                        <p style={{fontSize: '0.7rem', color: '#666', marginTop: '5px'}}>Use this color in your styles via {"${brandColor}"}</p>
                       </div>
                       <div className="form-group">
                         <label>Branding Helper</label>
