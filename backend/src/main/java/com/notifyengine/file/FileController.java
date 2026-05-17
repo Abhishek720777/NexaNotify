@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.UUID;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/v1/files")
@@ -21,6 +22,9 @@ import java.util.UUID;
 public class FileController {
 
     private static final String UPLOAD_DIR = "uploads/";
+
+    @org.springframework.beans.factory.annotation.Value("${app.url:}")
+    private String appUrl;
 
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -38,8 +42,17 @@ public class FileController {
             Path filePath = uploadPath.resolve(filename);
             Files.copy(file.getInputStream(), filePath);
 
-            // Return the publicly accessible URL
-            String fileUrl = "/uploads/" + filename;
+            // Determine the base URL (custom APP_URL, or fall back to request context)
+            String baseUrl = (appUrl != null && !appUrl.trim().isEmpty()) 
+                    ? appUrl.trim() 
+                    : ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+            
+            // Ensure no trailing slash in baseUrl
+            if (baseUrl.endsWith("/")) {
+                baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+            }
+            
+            String fileUrl = baseUrl + "/uploads/" + filename;
             return ResponseEntity.ok(Map.of("url", fileUrl));
         } catch (IOException e) {
             log.error("Failed to upload file", e);

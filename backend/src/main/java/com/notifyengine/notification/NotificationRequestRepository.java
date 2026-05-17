@@ -10,4 +10,5 @@ import java.util.List;
 public interface NotificationRequestRepository extends JpaRepository<NotificationRequest, Long> {
     List<NotificationRequest> findByClientIdOrderByCreatedAtDesc(Long clientId);
     long countByClientIdAndCreatedAtAfter(Long clientId, LocalDateTime createdAt);
+    long countByClientIdAndStatusAndCreatedAtAfter(Long clientId, String status, LocalDateTime createdAt);
 }

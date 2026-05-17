@@ -84,7 +84,7 @@ public class NotificationService {
 
             int queuedCount = 0;
             // Inject Brand Assets
-            data.put("brandLogo", client.getLogoUrl() != null ? client.getLogoUrl() : "https://img.icons8.com/color/96/zap.png");
+            data.put("brandLogo", client.getLogoUrl() != null ? client.getLogoUrl() : "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png");
             data.put("brandColor", client.getPrimaryColor() != null ? client.getPrimaryColor() : "#6366f1");
             data.put("clientName", client.getName());
 

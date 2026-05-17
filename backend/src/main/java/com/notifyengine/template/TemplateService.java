@@ -44,6 +44,8 @@ public class TemplateService {
         template.setSubject(templateDetails.getSubject());
         template.setBody(templateDetails.getBody());
         template.setActive(templateDetails.isActive());
+        template.setLogoUrl(templateDetails.getLogoUrl());
+        template.setPrimaryColor(templateDetails.getPrimaryColor());
 
         return templateRepository.save(template);
     }

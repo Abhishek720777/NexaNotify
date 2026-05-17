@@ -55,6 +55,7 @@ services:
       - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
       - TWILIO_FROM_NUMBER=${TWILIO_FROM_NUMBER}
       - FIREBASE_CREDENTIALS_PATH=${FIREBASE_CREDENTIALS_PATH}
+      - APP_URL=${APP_URL}
     volumes:
       - ./backend/firebase-adminsdk.json:/app/firebase-adminsdk.json:ro
       - ./backend/uploads:/app/uploads

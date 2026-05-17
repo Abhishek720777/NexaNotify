@@ -32,7 +32,8 @@ public class AnalyticsService {
         LocalDateTime todayStart = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
 
         long sent = logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtAfter(client.getId(), "SENT", todayStart);
-        long failed = logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtAfter(client.getId(), "DEAD", todayStart);
+        long failed = logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtAfter(client.getId(), "DEAD", todayStart) +
+                      requestRepository.countByClientIdAndStatusAndCreatedAtAfter(client.getId(), "FAILED", todayStart);
         long pending = logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtAfter(client.getId(), "PENDING", todayStart) +
                        logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtAfter(client.getId(), "RETRYING", todayStart);
         

@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import Templates from './pages/Templates';
 import Logs from './pages/Logs';
 import Analytics from './pages/Analytics';
+import Home from './pages/Home';
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -16,7 +17,7 @@ function Layout({ children }) {
       <aside className="sidebar">
         <div className="logo">NotifyEngine</div>
         <nav>
-          <a href="/" className={window.location.pathname === '/' ? 'active' : ''}>Dashboard</a>
+          <a href="/dashboard" className={window.location.pathname === '/dashboard' ? 'active' : ''}>Dashboard</a>
           <a href="/templates" className={window.location.pathname === '/templates' ? 'active' : ''}>Templates</a>
           <a href="/logs" className={window.location.pathname === '/logs' ? 'active' : ''}>Logs</a>
           <a href="/analytics" className={window.location.pathname === '/analytics' ? 'active' : ''}>Analytics</a>
@@ -39,7 +40,9 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         
-        <Route path="/" element={
+        <Route path="/" element={<Home />} />
+        
+        <Route path="/dashboard" element={
           <PrivateRoute>
             <Layout><Dashboard /></Layout>
           </PrivateRoute>

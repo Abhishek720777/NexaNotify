@@ -90,7 +90,7 @@ export default function Templates() {
 
   const renderPreview = () => {
     let html = formData.body;
-    const finalLogo = formData.logoUrl || 'https://img.icons8.com/color/96/zap.png';
+    const finalLogo = formData.logoUrl || 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png';
     const finalColor = formData.primaryColor;
 
     // Simple regex replacement
@@ -105,7 +105,11 @@ export default function Templates() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/templates', formData);
+      if (formData.id) {
+        await api.put(`/templates/${formData.id}`, formData);
+      } else {
+        await api.post('/templates', formData);
+      }
       setIsModalOpen(false);
       setFormData({ 
         eventName: '', channel: 'EMAIL', subject: '', body: '',
@@ -117,14 +121,26 @@ export default function Templates() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (confirm('Are you sure you want to deactivate this template?')) {
-      try {
-        await api.delete(`/templates/${id}`);
-        fetchTemplates();
-      } catch (err) {
-        console.error(err);
-      }
+  const handleEdit = (t) => {
+    setFormData({
+      id: t.id,
+      eventName: t.eventName,
+      channel: t.channel,
+      subject: t.subject || '',
+      body: t.body,
+      logoUrl: t.logoUrl || '',
+      primaryColor: t.primaryColor || '#6366f1'
+    });
+    setActiveTab('design');
+    setIsModalOpen(true);
+  };
+
+  const handleToggleActive = async (t) => {
+    try {
+      await api.put(`/templates/${t.id}`, { ...t, active: !t.active });
+      fetchTemplates();
+    } catch (err) {
+      alert('Failed to update template status');
     }
   };
 
@@ -132,7 +148,11 @@ export default function Templates() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="page-title" style={{margin: 0}}>Notification Templates</h1>
-        <button className="btn-primary" style={{width: 'auto'}} onClick={() => { setIsModalOpen(true); setActiveTab('design'); }}>
+        <button className="btn-primary" style={{width: 'auto'}} onClick={() => { 
+          setFormData({ eventName: '', channel: 'EMAIL', subject: '', body: '', logoUrl: '', primaryColor: '#6366f1' });
+          setIsModalOpen(true); 
+          setActiveTab('design'); 
+        }}>
           + Create New Template
         </button>
       </div>
@@ -213,10 +233,23 @@ export default function Templates() {
                       <div className="form-group">
                         <label>Project Logo</label>
                         <div style={{display: 'flex', gap: '1rem', alignItems: 'center', background: '#000', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border)'}}>
-                          <img src={formData.logoUrl || 'https://img.icons8.com/color/96/zap.png'} style={{height: '50px', background: '#fff', padding: '5px', borderRadius: '4px'}} alt="Logo" />
+                          <img 
+                            src={formData.logoUrl || 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'} 
+                            style={{height: '50px', background: '#fff', padding: '5px', borderRadius: '4px', maxWidth: '80px', objectFit: 'contain'}} 
+                            alt="Logo" 
+                            onError={(e) => { e.target.src = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'; }}
+                          />
                           <div style={{flex: 1}}>
                             <input type="file" onChange={handleFileUpload} accept="image/*" style={{fontSize: '0.75rem'}} />
-                            <p style={{fontSize: '0.7rem', color: '#666', marginTop: '5px'}}>Upload logo to use across this template via {"${brandLogo}"}</p>
+                            <div style={{margin: '8px 0', fontSize: '0.8rem', color: '#666', textAlign: 'center'}}>— OR —</div>
+                            <input 
+                              type="text" 
+                              value={formData.logoUrl} 
+                              onChange={(e) => setFormData({...formData, logoUrl: e.target.value})} 
+                              placeholder="Paste public logo URL (e.g. https://...)" 
+                              style={{fontSize: '0.8rem', padding: '6px 10px', width: '100%', background: '#121214', border: '1px solid #333', borderRadius: '4px', color: '#fff'}}
+                            />
+                            <p style={{fontSize: '0.7rem', color: '#666', marginTop: '5px'}}>Upload a logo file or paste a public image URL to use via {"${brandLogo}"}</p>
                           </div>
                         </div>
                       </div>
@@ -244,7 +277,9 @@ export default function Templates() {
                     {activeTab === 'design' ? (
                       <button type="button" className="btn-primary" onClick={() => setActiveTab('branding')}>Next: Add Branding Assets</button>
                     ) : (
-                      <button type="button" className="btn-primary" style={{flex: 1}} onClick={handleSubmit}>Finalize & Save Template</button>
+                      <button type="button" className="btn-primary" style={{flex: 1}} onClick={handleSubmit}>
+                        {formData.id ? 'Update Template' : 'Finalize & Save Template'}
+                      </button>
                     )}
                   </div>
                 </div>
@@ -296,10 +331,21 @@ export default function Templates() {
                     {t.active ? 'Active' : 'Inactive'}
                   </span>
                 </td>
-                <td>
-                  {t.active && (
-                    <button className="btn-sm" style={{background: '#3f3f46', color: 'white'}} onClick={() => handleDelete(t.id)}>Deactivate</button>
-                  )}
+                <td style={{display: 'flex', gap: '0.5rem', alignItems: 'center'}}>
+                  <button className="btn-sm" style={{background: 'var(--primary)', color: 'white', borderRadius: '4px', border: 'none', cursor: 'pointer'}} onClick={() => handleEdit(t)}>Edit</button>
+                  <button 
+                    className="btn-sm" 
+                    style={{
+                      background: t.active ? '#3f3f46' : '#10b981', 
+                      color: 'white',
+                      borderRadius: '4px',
+                      border: 'none',
+                      cursor: 'pointer'
+                    }} 
+                    onClick={() => handleToggleActive(t)}
+                  >
+                    {t.active ? 'Deactivate' : 'Activate'}
+                  </button>
                 </td>
               </tr>
             ))}
