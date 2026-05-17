@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/uploads/**").permitAll()
                 // External notification endpoint (Filter will check API Key)
                 .requestMatchers("/api/v1/notify").permitAll() 
                 // Any other analytics/template/user APIs require JWT

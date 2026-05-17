@@ -47,7 +47,11 @@ const PRO_TEMPLATES = {
 export default function Templates() {
   const [templates, setTemplates] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ eventName: '', channel: 'EMAIL', subject: '', body: '' });
+  const [activeTab, setActiveTab] = useState('design'); // 'design' or 'branding'
+  const [formData, setFormData] = useState({ 
+    eventName: '', channel: 'EMAIL', subject: '', body: '',
+    logoUrl: '', primaryColor: '#6366f1' 
+  });
   const [previewData, setPreviewData] = useState({ name: 'John Doe', orderId: 'ORD-123', total: '$199.99' });
 
   useEffect(() => {
@@ -63,16 +67,37 @@ export default function Templates() {
     }
   };
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const data = new FormData();
+    data.append('file', file);
+
+    try {
+      const res = await api.post('/files/upload', data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setFormData({ ...formData, logoUrl: res.data.url });
+    } catch (err) {
+      alert('Upload failed');
+    }
+  };
+
   const insertVariable = (variable) => {
     setFormData({ ...formData, body: formData.body + variable });
   };
 
   const renderPreview = () => {
     let html = formData.body;
-    // Simple regex replacement for preview purposes (not full Freemarker)
-    Object.keys(previewData).forEach(key => {
+    const finalLogo = formData.logoUrl || 'https://img.icons8.com/color/96/zap.png';
+    const finalColor = formData.primaryColor;
+
+    // Simple regex replacement
+    const data = { ...previewData, brandLogo: finalLogo, brandColor: finalColor, clientName: 'Your Brand' };
+    Object.keys(data).forEach(key => {
       const regex = new RegExp(`\\$\\{${key}\\}`, 'g');
-      html = html.replace(regex, previewData[key]);
+      html = html.replace(regex, data[key]);
     });
     return html;
   };
@@ -82,7 +107,10 @@ export default function Templates() {
     try {
       await api.post('/templates', formData);
       setIsModalOpen(false);
-      setFormData({ eventName: '', channel: 'EMAIL', subject: '', body: '' });
+      setFormData({ 
+        eventName: '', channel: 'EMAIL', subject: '', body: '',
+        logoUrl: '', primaryColor: '#6366f1' 
+      });
       fetchTemplates();
     } catch (err) {
       alert('Failed to save template');
@@ -104,7 +132,7 @@ export default function Templates() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="page-title" style={{margin: 0}}>Notification Templates</h1>
-        <button className="btn-primary" style={{width: 'auto'}} onClick={() => setIsModalOpen(true)}>
+        <button className="btn-primary" style={{width: 'auto'}} onClick={() => { setIsModalOpen(true); setActiveTab('design'); }}>
           + Create New Template
         </button>
       </div>
@@ -117,76 +145,127 @@ export default function Templates() {
         }}>
           <div className="card" style={{width: '1000px', maxWidth: '95vw', maxHeight: '90vh', overflowY: 'auto'}}>
             <div className="flex justify-between items-center mb-4">
-              <h2>Design Your Notification</h2>
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => setActiveTab('design')}
+                  style={{background: 'transparent', border: 'none', color: activeTab === 'design' ? 'var(--primary)' : '#999', fontWeight: 700, cursor: 'pointer', fontSize: '1.2rem', borderBottom: activeTab === 'design' ? '2px solid var(--primary)' : 'none', paddingBottom: '5px'}}
+                >
+                  1. Design Template
+                </button>
+                <button 
+                  onClick={() => setActiveTab('branding')}
+                  style={{background: 'transparent', border: 'none', color: activeTab === 'branding' ? 'var(--primary)' : '#999', fontWeight: 700, cursor: 'pointer', fontSize: '1.2rem', borderBottom: activeTab === 'branding' ? '2px solid var(--primary)' : 'none', paddingBottom: '5px'}}
+                >
+                  2. Project Branding
+                </button>
+              </div>
               <button onClick={() => setIsModalOpen(false)} style={{background: 'transparent', border: 'none', color: 'white', fontSize: '1.5rem', cursor: 'pointer'}}>&times;</button>
             </div>
 
             <form onSubmit={handleSubmit}>
               <div className="template-editor-grid">
-                {/* Editor Side */}
+                {/* Left Side: Dynamic based on Tab */}
                 <div className="editor-side">
-                  <div className="flex gap-4 mb-4">
-                    <div className="form-group" style={{flex: 1}}>
-                      <label>Event Name</label>
-                      <input required value={formData.eventName} onChange={(e) => setFormData({...formData, eventName: e.target.value})} placeholder="e.g. order_shipped" />
-                    </div>
-                    <div className="form-group" style={{width: '200px'}}>
-                      <label>Channel</label>
-                      <select value={formData.channel} onChange={(e) => setFormData({...formData, channel: e.target.value})}>
-                        <option value="EMAIL">Email (HTML)</option>
-                        <option value="SMS">SMS (Text)</option>
-                        <option value="PUSH">Push (Text)</option>
-                      </select>
-                    </div>
-                  </div>
+                  {activeTab === 'design' ? (
+                    <>
+                      <div className="flex gap-4 mb-4">
+                        <div className="form-group" style={{flex: 1}}>
+                          <label>Event Name</label>
+                          <input required value={formData.eventName} onChange={(e) => setFormData({...formData, eventName: e.target.value})} placeholder="e.g. order_shipped" />
+                        </div>
+                        <div className="form-group" style={{width: '200px'}}>
+                          <label>Channel</label>
+                          <select value={formData.channel} onChange={(e) => setFormData({...formData, channel: e.target.value})}>
+                            <option value="EMAIL">Email (HTML)</option>
+                            <option value="SMS">SMS (Text)</option>
+                            <option value="PUSH">Push (Text)</option>
+                          </select>
+                        </div>
+                      </div>
 
-                  {formData.channel === 'EMAIL' && (
-                    <div className="form-group">
-                      <label>Subject Line</label>
-                      <input required value={formData.subject} onChange={(e) => setFormData({...formData, subject: e.target.value})} placeholder="Your order has been shipped!" />
+                      {formData.channel === 'EMAIL' && (
+                        <div className="form-group">
+                          <label>Subject Line</label>
+                          <input required value={formData.subject} onChange={(e) => setFormData({...formData, subject: e.target.value})} placeholder="Your order has been shipped!" />
+                        </div>
+                      )}
+
+                      <div className="form-group">
+                        <label>Common Variables (Click to insert)</label>
+                        <div className="variable-chips">
+                          {AVAILABLE_VARIABLES.map(v => (
+                            <span key={v} className="chip" onClick={() => insertVariable(v)}>{v}</span>
+                          ))}
+                        </div>
+                        <label>Template Body (Freemarker/HTML)</label>
+                        <textarea 
+                          required 
+                          rows="10" 
+                          style={{fontFamily: 'monospace', fontSize: '0.875rem'}}
+                          value={formData.body} 
+                          onChange={(e) => setFormData({...formData, body: e.target.value})} 
+                          placeholder="<h1>Hello ${name}</h1>..." 
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="branding-controls">
+                      <div className="form-group">
+                        <label>Project Logo</label>
+                        <div style={{display: 'flex', gap: '1rem', alignItems: 'center', background: '#000', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border)'}}>
+                          <img src={formData.logoUrl || 'https://img.icons8.com/color/96/zap.png'} style={{height: '50px', background: '#fff', padding: '5px', borderRadius: '4px'}} alt="Logo" />
+                          <div style={{flex: 1}}>
+                            <input type="file" onChange={handleFileUpload} accept="image/*" style={{fontSize: '0.75rem'}} />
+                            <p style={{fontSize: '0.7rem', color: '#666', marginTop: '5px'}}>Upload logo to use across this template via \${brandLogo}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <label>Primary Brand Color</label>
+                        <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+                          <input type="color" value={formData.primaryColor} onChange={(e) => setFormData({...formData, primaryColor: e.target.value})} style={{height: '50px', width: '100px', padding: '0'}} />
+                          <input type="text" value={formData.primaryColor} onChange={(e) => setFormData({...formData, primaryColor: e.target.value})} style={{flex: 1}} />
+                        </div>
+                        <p style={{fontSize: '0.7rem', color: '#666', marginTop: '5px'}}>Use this color in your styles via \${brandColor}</p>
+                      </div>
+                      <div className="form-group">
+                        <label>Branding Helper</label>
+                        <div style={{fontSize: '0.875rem', color: 'var(--text-muted)', background: '#18181b', padding: '1rem', borderRadius: '8px', border: '1px dashed #333'}}>
+                          Use these in your HTML:
+                          <code style={{display: 'block', marginTop: '5px', color: 'var(--primary)'}}>&lt;img src="${'${brandLogo}'}" /&gt;</code>
+                          <code style={{display: 'block', marginTop: '5px', color: 'var(--primary)'}}>&lt;h1 style="color: ${'${brandColor}'}"&gt;Hello&lt;/h1&gt;</code>
+                        </div>
+                      </div>
                     </div>
                   )}
-
-                  <div className="form-group">
-                    <label>Variables (Click to insert)</label>
-                    <div className="variable-chips">
-                      {AVAILABLE_VARIABLES.map(v => (
-                        <span key={v} className="chip" onClick={() => insertVariable(v)}>{v}</span>
-                      ))}
-                    </div>
-                    <label>Template Body (Freemarker/HTML)</label>
-                    <textarea 
-                      required 
-                      rows="12" 
-                      style={{fontFamily: 'monospace', fontSize: '0.875rem'}}
-                      value={formData.body} 
-                      onChange={(e) => setFormData({...formData, body: e.target.value})} 
-                      placeholder="<h1>Hello ${name}</h1>..." 
-                    />
-                  </div>
                   
-                  <div className="flex gap-4">
-                    <button type="submit" className="btn-primary" style={{flex: 1}}>Save Template</button>
+                  <div className="flex gap-4" style={{marginTop: 'auto', paddingTop: '1rem'}}>
+                    {activeTab === 'branding' && <button type="button" className="btn-primary" style={{background: '#3f3f46'}} onClick={() => setActiveTab('design')}>Back to Design</button>}
+                    {activeTab === 'design' ? (
+                      <button type="button" className="btn-primary" onClick={() => setActiveTab('branding')}>Next: Add Branding Assets</button>
+                    ) : (
+                      <button type="submit" className="btn-primary" style={{flex: 1}}>Finalize & Save Template</button>
+                    )}
                   </div>
                 </div>
 
-                {/* Preview Side */}
+                {/* Right Side: Persistent Preview */}
                 <div className="preview-side">
                   <label className="flex justify-between" style={{display: 'flex', alignItems: 'center', marginBottom: '0.5rem'}}>
-                    <span>Live Preview</span>
+                    <span>Live Rendering Preview</span>
                     <span className="badge info">{formData.channel} Mode</span>
                   </label>
-                  <div className="preview-container">
+                  <div className="preview-container" style={{maxHeight: '600px'}}>
                     {formData.channel === 'EMAIL' ? (
-                      <div dangerouslySetInnerHTML={{ __html: renderPreview() || '<p style="color:#999">Type something to see preview...</p>' }} />
+                      <div dangerouslySetInnerHTML={{ __html: renderPreview() || '<p style="color:#999">Start designing to see preview...</p>' }} />
                     ) : (
                       <div style={{fontFamily: 'monospace', whiteSpace: 'pre-wrap'}}>
-                        {renderPreview() || 'Type something to see preview...'}
+                        {renderPreview() || 'Start designing to see preview...'}
                       </div>
                     )}
                   </div>
                   <p style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem'}}>
-                    Note: This is a simplified preview. Complex logic should be tested in staging.
+                    This preview uses your project-specific logo and brand color variables.
                   </p>
                 </div>
               </div>

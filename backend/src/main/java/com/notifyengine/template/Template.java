@@ -49,6 +49,9 @@ public class Template {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String body; // Freemarker syntax
 
+    private String logoUrl;
+    private String primaryColor;
+
     @Column(nullable = false)
     private boolean isActive = true;
 

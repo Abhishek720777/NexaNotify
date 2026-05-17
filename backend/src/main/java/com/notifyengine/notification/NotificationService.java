@@ -90,6 +90,10 @@ public class NotificationService {
 
             for (Template template : templates) {
                 if (shouldSend(user, template.getChannel(), priority)) {
+                    // Refresh data map with Template-specific branding if available
+                    data.put("brandLogo", template.getLogoUrl() != null ? template.getLogoUrl() : data.get("brandLogo"));
+                    data.put("brandColor", template.getPrimaryColor() != null ? template.getPrimaryColor() : data.get("brandColor"));
+
                     String resolvedBody = resolveTemplate(template.getBody(), data);
                     
                     NotificationLog notificationLog = new NotificationLog();

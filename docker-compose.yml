@@ -57,6 +57,7 @@ services:
       - FIREBASE_CREDENTIALS_PATH=${FIREBASE_CREDENTIALS_PATH}
     volumes:
       - ./backend/firebase-adminsdk.json:/app/firebase-adminsdk.json:ro
+      - ./backend/uploads:/app/uploads
     depends_on:
       mysql:
         condition: service_healthy
