@@ -162,7 +162,7 @@ export default function Templates() {
               <button onClick={() => setIsModalOpen(false)} style={{background: 'transparent', border: 'none', color: 'white', fontSize: '1.5rem', cursor: 'pointer'}}>&times;</button>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <div className="template-form">
               <div className="template-editor-grid">
                 {/* Left Side: Dynamic based on Tab */}
                 <div className="editor-side">
@@ -244,7 +244,7 @@ export default function Templates() {
                     {activeTab === 'design' ? (
                       <button type="button" className="btn-primary" onClick={() => setActiveTab('branding')}>Next: Add Branding Assets</button>
                     ) : (
-                      <button type="submit" className="btn-primary" style={{flex: 1}}>Finalize & Save Template</button>
+                      <button type="button" className="btn-primary" style={{flex: 1}} onClick={handleSubmit}>Finalize & Save Template</button>
                     )}
                   </div>
                 </div>
@@ -269,7 +269,7 @@ export default function Templates() {
                   </p>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}
