@@ -232,8 +232,8 @@ export default function Templates() {
                         <label>Branding Helper</label>
                         <div style={{fontSize: '0.875rem', color: 'var(--text-muted)', background: '#18181b', padding: '1rem', borderRadius: '8px', border: '1px dashed #333'}}>
                           Use these in your HTML:
-                          <code style={{display: 'block', marginTop: '5px', color: 'var(--primary)'}}>&lt;img src="${'${brandLogo}'}" /&gt;</code>
-                          <code style={{display: 'block', marginTop: '5px', color: 'var(--primary)'}}>&lt;h1 style="color: ${'${brandColor}'}"&gt;Hello&lt;/h1&gt;</code>
+                          <code style={{display: 'block', marginTop: '5px', color: 'var(--primary)'}}>{"<img src=\"${brandLogo}\" />"}</code>
+                          <code style={{display: 'block', marginTop: '5px', color: 'var(--primary)'}}>{"<h1 style=\"color: ${brandColor}\">Hello</h1>"}</code>
                         </div>
                       </div>
                     </div>
