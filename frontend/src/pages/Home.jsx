@@ -783,8 +783,14 @@ export default function Home() {
           ))}
         </ul>
         <div className="nn-nav-end">
-          <button className="btn-ghost" onClick={() => window.location.href = '/login'}>Sign in</button>
-          <button className="btn-fill" onClick={() => window.location.href = '/login'}>Get started</button>
+          {localStorage.getItem('token') ? (
+            <button className="btn-fill" onClick={() => window.location.href = '/dashboard'}>Go to Dashboard →</button>
+          ) : (
+            <>
+              <button className="btn-ghost" onClick={() => window.location.href = '/login'}>Sign in</button>
+              <button className="btn-fill" onClick={() => window.location.href = '/login'}>Get started</button>
+            </>
+          )}
         </div>
       </nav>
 
@@ -809,8 +815,14 @@ export default function Home() {
             and robust delivery observability.
           </p>
           <div className="nn-hero-btns">
-            <button className="btn-hero-a" onClick={() => window.location.href = '/login'}>Start building →</button>
-            <button className="btn-hero-b" onClick={() => window.location.href = '/login'}>Sign in</button>
+            {localStorage.getItem('token') ? (
+              <button className="btn-hero-a" onClick={() => window.location.href = '/dashboard'}>Go to Dashboard →</button>
+            ) : (
+              <>
+                <button className="btn-hero-a" onClick={() => window.location.href = '/login'}>Start building →</button>
+                <button className="btn-hero-b" onClick={() => window.location.href = '/login'}>Sign in</button>
+              </>
+            )}
           </div>
         </div>
 
@@ -1078,8 +1090,14 @@ export default function Home() {
               Self-hosted, no vendor lock-in, fully yours.
             </p>
             <div className="nn-cta-btns">
-              <button className="btn-cta-a" onClick={() => window.location.href = '/login'}>Get started free <span>→</span></button>
-              <button className="btn-cta-b" onClick={() => window.location.href = '/login'}>Sign in <span style={{ opacity: .4 }}>↗</span></button>
+              {localStorage.getItem('token') ? (
+                <button className="btn-cta-a" onClick={() => window.location.href = '/dashboard'}>Go to Dashboard <span>→</span></button>
+              ) : (
+                <>
+                  <button className="btn-cta-a" onClick={() => window.location.href = '/login'}>Get started free <span>→</span></button>
+                  <button className="btn-cta-b" onClick={() => window.location.href = '/login'}>Sign in <span style={{ opacity: .4 }}>↗</span></button>
+                </>
+              )}
             </div>
           </div>
         </div>
