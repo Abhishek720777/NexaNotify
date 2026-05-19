@@ -13,6 +13,7 @@ import java.util.List;
 public class TemplateService {
 
     private final TemplateRepository templateRepository;
+    private final TemplateCacheService templateCacheService;
 
     private Client getCurrentClient() {
         return (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -21,7 +22,9 @@ public class TemplateService {
     public Template createTemplate(Template template) {
         Client client = getCurrentClient();
         template.setClient(client);
-        return templateRepository.save(template);
+        Template saved = templateRepository.save(template);
+        templateCacheService.evictActiveTemplates(client.getId(), template.getEventName());
+        return saved;
     }
 
     public List<Template> getAllTemplates() {
@@ -55,7 +58,15 @@ public class TemplateService {
         newTemplate.setPrimaryColor(templateDetails.getPrimaryColor());
         newTemplate.setVersion(oldTemplate.getVersion() + 1);
 
-        return templateRepository.save(newTemplate);
+        Template saved = templateRepository.save(newTemplate);
+
+        // Evict caches
+        templateCacheService.evictActiveTemplates(client.getId(), oldTemplate.getEventName());
+        if (!oldTemplate.getEventName().equalsIgnoreCase(newTemplate.getEventName())) {
+            templateCacheService.evictActiveTemplates(client.getId(), newTemplate.getEventName());
+        }
+
+        return saved;
     }
 
     @Transactional
@@ -70,5 +81,7 @@ public class TemplateService {
 
         template.setActive(false);
         templateRepository.save(template);
+
+        templateCacheService.evictActiveTemplates(client.getId(), template.getEventName());
     }
 }

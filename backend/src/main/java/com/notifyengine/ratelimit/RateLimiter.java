@@ -32,8 +32,9 @@ public class RateLimiter {
             return false;
         }
 
-        // Add current request
-        redisTemplate.opsForZSet().add(key, String.valueOf(currentTime), currentTime);
+        // Add current request with unique member value to handle concurrent requests properly
+        String memberValue = currentTime + ":" + java.util.UUID.randomUUID().toString();
+        redisTemplate.opsForZSet().add(key, memberValue, currentTime);
         redisTemplate.expire(key, 60, TimeUnit.SECONDS);
 
         return true;

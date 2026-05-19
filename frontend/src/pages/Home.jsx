@@ -482,9 +482,6 @@ body {
 }
 `;
 
-/* ═══════════════════════════════════════════════════════════
-   DATA
-═══════════════════════════════════════════════════════════ */
 const CHANNELS = [
   {
     num: "01", name: "Email", tag: "Live",
@@ -567,77 +564,74 @@ const TICKER_B = ["Route", "Retry", "Track", "Deliver", "Log", "Template", "Audi
 /* ─── Code token snippets dictionary ─── */
 const CODE_SNIPPETS = {
   0: [ // cURL
-    [{t:"c",v:"# Hit the unified notification gateway directly"}],
-    [{t:"k",v:"curl "},{t:"p",v:"-X "},{t:"k",v:"POST "},{t:"s",v:"'http://localhost:8080/api/v1/notify' \\"}],
-    [{t:"p",v:"  -H "},{t:"s",v:"'Content-Type: application/json' \\"}],
-    [{t:"p",v:"  -H "},{t:"s",v:"'X-API-KEY: your-client-api-key' \\"}],
-    [{t:"p",v:"  -d "},{t:"s",v:"'{"}],
-    [{t:"a",v:"    \"userId\""},{t:"p",v:": "},{t:"s",v:"\"user_101\""},{t:"p",v:","}],
-    [{t:"a",v:"    \"event\""},{t:"p",v:": "},{t:"s",v:"\"order_confirmed\""},{t:"p",v:","}],
-    [{t:"a",v:"    \"data\""},{t:"p",v:": {"}],
-    [{t:"a",v:"      \"name\""},{t:"p",v:": "},{t:"s",v:"\"Alex\""},{t:"p",v:","}],
-    [{t:"a",v:"      \"orderId\""},{t:"p",v:": "},{t:"s",v:"\"ORD-8742\""}],
-    [{t:"p",v:"    }"}],
-    [{t:"s",v:"  }'"}]
+    [{ t: "c", v: "# Hit the unified notification gateway directly" }],
+    [{ t: "k", v: "curl " }, { t: "p", v: "-X " }, { t: "k", v: "POST " }, { t: "s", v: "'http://localhost:8080/api/v1/notify' \\" }],
+    [{ t: "p", v: "  -H " }, { t: "s", v: "'Content-Type: application/json' \\" }],
+    [{ t: "p", v: "  -H " }, { t: "s", v: "'X-API-KEY: your-client-api-key' \\" }],
+    [{ t: "p", v: "  -d " }, { t: "s", v: "'{" }],
+    [{ t: "a", v: "    \"userId\"" }, { t: "p", v: ": " }, { t: "s", v: "\"user_101\"" }, { t: "p", v: "," }],
+    [{ t: "a", v: "    \"event\"" }, { t: "p", v: ": " }, { t: "s", v: "\"order_confirmed\"" }, { t: "p", v: "," }],
+    [{ t: "a", v: "    \"data\"" }, { t: "p", v: ": {" }],
+    [{ t: "a", v: "      \"name\"" }, { t: "p", v: ": " }, { t: "s", v: "\"Alex\"" }, { t: "p", v: "," }],
+    [{ t: "a", v: "      \"orderId\"" }, { t: "p", v: ": " }, { t: "s", v: "\"ORD-8742\"" }],
+    [{ t: "p", v: "    }" }],
+    [{ t: "s", v: "  }'" }]
   ],
   1: [ // JavaScript
-    [{t:"c",v:"// Call NotifyEngine with native fetch"}],
-    [{t:"k",v:"await "},{t:"f",v:"fetch"},{t:"p",v:"("},{t:"s",v:"'http://localhost:8080/api/v1/notify'"},{t:"p",v:", {"}],
-    [{t:"a",v:"  method"},{t:"p",v:": "},{t:"s",v:"'POST'"},{t:"p",v:","}],
-    [{t:"a",v:"  headers"},{t:"p",v:": {"}],
-    [{t:"s",v:"    'Content-Type'"},{t:"p",v:": "},{t:"s",v:"'application/json'"},{t:"p",v:","}],
-    [{t:"s",v:"    'X-API-KEY'"},{t:"p",v:": "},{t:"s",v:"'your-client-api-key'"}],
-    [{t:"p",v:"  },"}],
-    [{t:"a",v:"  body"},{t:"p",v:": "},{t:"f",v:"JSON.stringify"},{t:"p",v:"({"}],
-    [{t:"a",v:"    userId"},{t:"p",v:": "},{t:"s",v:"'user_101'"},{t:"p",v:","}],
-    [{t:"a",v:"    event"},{t:"p",v:": "},{t:"s",v:"'order_confirmed'"},{t:"p",v:","}],
-    [{t:"a",v:"    data"},{t:"p",v:": { "},{t:"a",v:"name"},{t:"p",v:": "},{t:"s",v:"'Alex'"},{t:"p",v:", "},{t:"a",v:"orderId"},{t:"p",v:": "},{t:"s",v:"'ORD-8742'"},{t:"p",v:" }"}],
-    [{t:"p",v:"  })"}],
-    [{t:"p",v:"});"}]
+    [{ t: "c", v: "// Call NotifyEngine with native fetch" }],
+    [{ t: "k", v: "await " }, { t: "f", v: "fetch" }, { t: "p", v: "(" }, { t: "s", v: "'http://localhost:8080/api/v1/notify'" }, { t: "p", v: ", {" }],
+    [{ t: "a", v: "  method" }, { t: "p", v: ": " }, { t: "s", v: "'POST'" }, { t: "p", v: "," }],
+    [{ t: "a", v: "  headers" }, { t: "p", v: ": {" }],
+    [{ t: "s", v: "    'Content-Type'" }, { t: "p", v: ": " }, { t: "s", v: "'application/json'" }, { t: "p", v: "," }],
+    [{ t: "s", v: "    'X-API-KEY'" }, { t: "p", v: ": " }, { t: "s", v: "'your-client-api-key'" }],
+    [{ t: "p", v: "  }," }],
+    [{ t: "a", v: "  body" }, { t: "p", v: ": " }, { t: "f", v: "JSON.stringify" }, { t: "p", v: "({" }],
+    [{ t: "a", v: "    userId" }, { t: "p", v: ": " }, { t: "s", v: "'user_101'" }, { t: "p", v: "," }],
+    [{ t: "a", v: "    event" }, { t: "p", v: ": " }, { t: "s", v: "'order_confirmed'" }, { t: "p", v: "," }],
+    [{ t: "a", v: "    data" }, { t: "p", v: ": { " }, { t: "a", v: "name" }, { t: "p", v: ": " }, { t: "s", v: "'Alex'" }, { t: "p", v: ", " }, { t: "a", v: "orderId" }, { t: "p", v: ": " }, { t: "s", v: "'ORD-8742'" }, { t: "p", v: " }" }],
+    [{ t: "p", v: "  })" }],
+    [{ t: "p", v: "});" }]
   ],
   2: [ // Python
-    [{t:"c",v:"# Execute async notification triggers using requests"}],
-    [{t:"k",v:"import "},{t:"p",v:"requests"}],
+    [{ t: "c", v: "# Execute async notification triggers using requests" }],
+    [{ t: "k", v: "import " }, { t: "p", v: "requests" }],
     [],
-    [{t:"p",v:"response = requests."},{t:"f",v:"post"},{t:"p",v:"("}],
-    [{t:"s",v:"    \"http://localhost:8080/api/v1/notify\""},{t:"p",v:","}],
-    [{t:"a",v:"    headers"},{t:"p",v:"={"}],
-    [{t:"s",v:"        \"Content-Type\""},{t:"p",v:": "},{t:"s",v:"\"application/json\""},{t:"p",v:","}],
-    [{t:"s",v:"        \"X-API-KEY\""},{t:"p",v:": "},{t:"s",v:"\"your-client-api-key\""}],
-    [{t:"p",v:"    },"}],
-    [{t:"a",v:"    json"},{t:"p",v:"={"}],
-    [{t:"s",v:"        \"userId\""},{t:"p",v:": "},{t:"s",v:"\"user_101\""},{t:"p",v:","}],
-    [{t:"s",v:"        \"event\""},{t:"p",v:": "},{t:"s",v:"\"order_confirmed\""},{t:"p",v:","}],
-    [{t:"s",v:"        \"data\""},{t:"p",v:": {"}],
-    [{t:"s",v:"            \"name\""},{t:"p",v:": "},{t:"s",v:"\"Alex\""},{t:"p",v:","}],
-    [{t:"s",v:"            \"orderId\""},{t:"p",v:": "},{t:"s",v:"\"ORD-8742\""}],
-    [{t:"p",v:"        }"}],
-    [{t:"p",v:"    }"}],
-    [{t:"p",v:")"}]
+    [{ t: "p", v: "response = requests." }, { t: "f", v: "post" }, { t: "p", v: "(" }],
+    [{ t: "s", v: "    \"http://localhost:8080/api/v1/notify\"" }, { t: "p", v: "," }],
+    [{ t: "a", v: "    headers" }, { t: "p", v: "={" }],
+    [{ t: "s", v: "        \"Content-Type\"" }, { t: "p", v: ": " }, { t: "s", v: "\"application/json\"" }, { t: "p", v: "," }],
+    [{ t: "s", v: "        \"X-API-KEY\"" }, { t: "p", v: ": " }, { t: "s", v: "\"your-client-api-key\"" }],
+    [{ t: "p", v: "    }," }],
+    [{ t: "a", v: "    json" }, { t: "p", v: "={" }],
+    [{ t: "s", v: "        \"userId\"" }, { t: "p", v: ": " }, { t: "s", v: "\"user_101\"" }, { t: "p", v: "," }],
+    [{ t: "s", v: "        \"event\"" }, { t: "p", v: ": " }, { t: "s", v: "\"order_confirmed\"" }, { t: "p", v: "," }],
+    [{ t: "s", v: "        \"data\"" }, { t: "p", v: ": {" }],
+    [{ t: "s", v: "            \"name\"" }, { t: "p", v: ": " }, { t: "s", v: "\"Alex\"" }, { t: "p", v: "," }],
+    [{ t: "s", v: "            \"orderId\"" }, { t: "p", v: ": " }, { t: "s", v: "\"ORD-8742\"" }],
+    [{ t: "p", v: "        }" }],
+    [{ t: "p", v: "    }" }],
+    [{ t: "p", v: ")" }]
   ],
   3: [ // Go
-    [{t:"c",v:"// Go HTTP integration snippet"}],
-    [{t:"k",v:"package "},{t:"p",v:"main"}],
+    [{ t: "c", v: "// Go HTTP integration snippet" }],
+    [{ t: "k", v: "package " }, { t: "p", v: "main" }],
     [],
-    [{t:"k",v:"import "},{t:"p",v:"("}],
-    [{t:"s",v:"\t\"bytes\""}],
-    [{t:"s",v:"\t\"net/http\""}],
-    [{t:"p",v:")"}],
+    [{ t: "k", v: "import " }, { t: "p", v: "(" }],
+    [{ t: "s", v: "\t\"bytes\"" }],
+    [{ t: "s", v: "\t\"net/http\"" }],
+    [{ t: "p", v: ")" }],
     [],
-    [{t:"k",v:"func "},{t:"f",v:"main"},{t:"p",v:"() {"}],
-    [{t:"p",v:"\tpayload := []byte(`{"},{t:"s",v:"\"userId\": \"user_101\", \"event\": \"order_confirmed\", \"data\": {\"name\": \"Alex\"}"},{t:"p",v:"}`)"}],
-    [{t:"p",v:"\treq, _ := http."},{t:"f",v:"NewRequest"},{t:"p",v:"("},{t:"s",v:"\"POST\""},{t:"p",v:", "},{t:"s",v:"\"http://localhost:8080/api/v1/notify\""},{t:"p",v:", bytes."},{t:"f",v:"NewBuffer"},{t:"p",v:"(payload))"}],
-    [{t:"p",v:"\treq.Header."},{t:"f",v:"Set"},{t:"p",v:"("},{t:"s",v:"\"Content-Type\""},{t:"p",v:", "},{t:"s",v:"\"application/json\""},{t:"p",v:")"}],
-    [{t:"p",v:"\treq.Header."},{t:"f",v:"Set"},{t:"p",v:"("},{t:"s",v:"\"X-API-KEY\""},{t:"p",v:", "},{t:"s",v:"\"your-client-api-key\""},{t:"p",v:")"}],
-    [{t:"p",v:"\tclient := &http.Client{}"}],
-    [{t:"p",v:"\tclient."},{t:"f",v:"Do"},{t:"p",v:"(req)"}],
-    [{t:"p",v:"}"}]
+    [{ t: "k", v: "func " }, { t: "f", v: "main" }, { t: "p", v: "() {" }],
+    [{ t: "p", v: "\tpayload := []byte(`{" }, { t: "s", v: "\"userId\": \"user_101\", \"event\": \"order_confirmed\", \"data\": {\"name\": \"Alex\"}" }, { t: "p", v: "}`)" }],
+    [{ t: "p", v: "\treq, _ := http." }, { t: "f", v: "NewRequest" }, { t: "p", v: "(" }, { t: "s", v: "\"POST\"" }, { t: "p", v: ", " }, { t: "s", v: "\"http://localhost:8080/api/v1/notify\"" }, { t: "p", v: ", bytes." }, { t: "f", v: "NewBuffer" }, { t: "p", v: "(payload))" }],
+    [{ t: "p", v: "\treq.Header." }, { t: "f", v: "Set" }, { t: "p", v: "(" }, { t: "s", v: "\"Content-Type\"" }, { t: "p", v: ", " }, { t: "s", v: "\"application/json\"" }, { t: "p", v: ")" }],
+    [{ t: "p", v: "\treq.Header." }, { t: "f", v: "Set" }, { t: "p", v: "(" }, { t: "s", v: "\"X-API-KEY\"" }, { t: "p", v: ", " }, { t: "s", v: "\"your-client-api-key\"" }, { t: "p", v: ")" }],
+    [{ t: "p", v: "\tclient := &http.Client{}" }],
+    [{ t: "p", v: "\tclient." }, { t: "f", v: "Do" }, { t: "p", v: "(req)" }],
+    [{ t: "p", v: "}" }]
   ]
 };
 
-/* ═══════════════════════════════════════════════════════════
-   COMPONENT
-═══════════════════════════════════════════════════════════ */
 export default function Home() {
   const barRef = useRef(null);
   const navRef = useRef(null);
@@ -1125,7 +1119,7 @@ export default function Home() {
           ))}
         </div>
         <div className="nn-footer-bot">
-          <span className="nn-footer-copy">© 2026 SignalFlow · Developed by Abhishek</span>
+          <span className="nn-footer-copy">© 2026 SignalFlow</span>
           <div className="nn-footer-certs">
             {["SELF-HOSTED", "MIT LICENSE", "REST API"].map(c => (
               <span className="nn-footer-cert" key={c}>{c}</span>

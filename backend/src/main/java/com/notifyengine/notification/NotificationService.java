@@ -11,6 +11,7 @@ import com.notifyengine.template.TemplateRepository;
 import com.notifyengine.user.NotificationUser;
 import com.notifyengine.user.UserPreference;
 import com.notifyengine.user.UserRepository;
+import com.notifyengine.template.TemplateCacheService;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class NotificationService {
     private final UserRepository userRepository;
     private final RedisQueueService queueService;
     private final RateLimiter rateLimiter;
+    private final TemplateCacheService templateCacheService;
     private final ObjectMapper objectMapper;
 
     public void sendTestNotification(String channel, String to, String subject, String body, Map<String, Object> mockData) {
@@ -98,7 +100,7 @@ public class NotificationService {
         request = requestRepository.save(request);
 
         try {
-            List<Template> templates = templateRepository.findByClientIdAndEventNameAndIsActiveTrue(client.getId(), eventName);
+            List<Template> templates = templateCacheService.getActiveTemplates(client.getId(), eventName);
 
             if (templates.isEmpty()) {
                 request.setStatus("FAILED");
