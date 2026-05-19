@@ -12,11 +12,11 @@ export default function Docs() {
       </div>
 
       {/* Quick Navigation Sidebar / Jump-to */}
-      <div style={{ 
-        background: 'var(--surface)', 
-        border: '1px solid var(--border)', 
-        borderRadius: '8px', 
-        padding: '1.5rem', 
+      <div style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: '8px',
+        padding: '1.5rem',
         marginBottom: '3rem',
         boxShadow: '0 4px 24px rgba(0,0,0,.02)'
       }}>
@@ -38,15 +38,15 @@ export default function Docs() {
           1. Introduction & Core Concepts
         </h2>
         <p style={{ color: 'var(--ink-2)', lineHeight: '1.7', marginBottom: '1rem' }}>
-          SignalFlow is a state-of-the-art, self-hosted, multi-channel notification engine designed for high throughput, low latency, and absolute deliverability. The engine abstracts away the complexity of handling multiple downstream service providers (like SMTP relays, SMS gateways, and Firebase Cloud Messaging) by exposing a single unified REST API.
+          SignalFlow is a self-hosted, multi-channel notification engine designed for high throughput, low latency, and absolute deliverability. The engine abstracts away the complexity of handling multiple downstream service providers (like SMTP relays, SMS gateways, and Firebase Cloud Messaging) by exposing a single unified REST API.
         </p>
         <p style={{ color: 'var(--ink-2)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
           Instead of writing complex routing code in your downstream applications, you send events to SignalFlow. The platform resolves templates dynamically, coordinates user preferences, executes rate limiting, and schedules deliveries with bulletproof reliability using Redis-backed queues.
         </p>
-        <div style={{ 
-          background: 'rgba(29, 184, 139, 0.08)', 
-          borderLeft: '4px solid var(--accent)', 
-          padding: '1.25rem', 
+        <div style={{
+          background: 'rgba(29, 184, 139, 0.08)',
+          borderLeft: '4px solid var(--accent)',
+          padding: '1.25rem',
           borderRadius: '0 8px 8px 0',
           marginBottom: '1.5rem'
         }}>
@@ -65,7 +65,7 @@ export default function Docs() {
         <p style={{ color: 'var(--ink-2)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
           SignalFlow is built on a decoupled, asynchronous, worker-oriented model ensuring system components scale independently under load.
         </p>
-        
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: 'var(--surface)', border: '1px solid var(--border)', padding: '1.5rem', borderRadius: '8px', marginBottom: '1.5rem' }}>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
             <div style={{ background: 'var(--accent-bg)', color: 'var(--accent-2)', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>1</div>
@@ -117,14 +117,14 @@ export default function Docs() {
         <p style={{ color: 'var(--ink-2)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
           To authorize your programmatic API calls, pass your private key in the header of every HTTP request:
         </p>
-        
-        <div style={{ 
-          background: 'var(--dark-2)', 
-          border: '1px solid rgba(255,255,255,0.06)', 
-          borderRadius: '8px', 
-          padding: '1rem', 
-          fontFamily: 'JetBrains Mono, monospace', 
-          fontSize: '0.875rem', 
+
+        <div style={{
+          background: 'var(--dark-2)',
+          border: '1px solid rgba(255,255,255,0.06)',
+          borderRadius: '8px',
+          padding: '1rem',
+          fontFamily: 'JetBrains Mono, monospace',
+          fontSize: '0.875rem',
           color: '#e6edf3',
           marginBottom: '1.5rem',
           overflowX: 'auto'
@@ -132,10 +132,10 @@ export default function Docs() {
           X-API-KEY: sf_live_0b78c8d83d8e574a62df0b65f32a76f2
         </div>
 
-        <div style={{ 
-          background: 'rgba(229, 62, 62, 0.08)', 
-          borderLeft: '4px solid var(--danger)', 
-          padding: '1rem', 
+        <div style={{
+          background: 'rgba(229, 62, 62, 0.08)',
+          borderLeft: '4px solid var(--danger)',
+          padding: '1rem',
           borderRadius: '0 8px 8px 0',
           marginBottom: '1.5rem'
         }}>
@@ -156,27 +156,27 @@ export default function Docs() {
         </p>
 
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '1rem' }}>
-          <span style={{ 
-            background: 'var(--accent)', 
-            color: 'white', 
-            fontFamily: 'JetBrains Mono', 
-            fontSize: '0.75rem', 
-            fontWeight: 'bold', 
-            padding: '4px 8px', 
-            borderRadius: '4px' 
+          <span style={{
+            background: 'var(--accent)',
+            color: 'white',
+            fontFamily: 'JetBrains Mono',
+            fontSize: '0.75rem',
+            fontWeight: 'bold',
+            padding: '4px 8px',
+            borderRadius: '4px'
           }}>POST</span>
           <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.9rem', color: 'var(--ink)' }}>/api/v1/notifications</span>
         </div>
 
         <p style={{ color: 'var(--ink-2)', fontSize: '0.95rem', marginBottom: '1rem' }}><strong>Payload JSON Structure:</strong></p>
 
-        <pre style={{ 
-          background: 'var(--dark-2)', 
-          border: '1px solid rgba(255,255,255,0.06)', 
-          borderRadius: '8px', 
-          padding: '1.25rem', 
-          fontFamily: 'JetBrains Mono, monospace', 
-          fontSize: '0.85rem', 
+        <pre style={{
+          background: 'var(--dark-2)',
+          border: '1px solid rgba(255,255,255,0.06)',
+          borderRadius: '8px',
+          padding: '1.25rem',
+          fontFamily: 'JetBrains Mono, monospace',
+          fontSize: '0.85rem',
           color: '#e6edf3',
           marginBottom: '1.5rem',
           overflowX: 'auto'
@@ -295,13 +295,13 @@ export default function Docs() {
           If a third-party gateway responds with a temporary error (network timeout, API throttled, etc.), the worker calculates a delayed schedule timestamp using exponential backoff:
         </p>
 
-        <div style={{ 
-          background: 'var(--dark-2)', 
-          border: '1px solid rgba(255,255,255,0.06)', 
-          borderRadius: '8px', 
-          padding: '1rem', 
-          fontFamily: 'JetBrains Mono, monospace', 
-          fontSize: '0.875rem', 
+        <div style={{
+          background: 'var(--dark-2)',
+          border: '1px solid rgba(255,255,255,0.06)',
+          borderRadius: '8px',
+          padding: '1rem',
+          fontFamily: 'JetBrains Mono, monospace',
+          fontSize: '0.875rem',
           color: '#e6edf3',
           marginBottom: '1.5rem',
           overflowX: 'auto'
