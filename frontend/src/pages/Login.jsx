@@ -7,6 +7,8 @@ export default function Login() {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [apiKeyToCopy, setApiKeyToCopy] = useState(null);
+  const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,9 +27,10 @@ export default function Login() {
       const res = await api.post(endpoint, formData);
       localStorage.setItem('token', res.data.token);
       if (!isLogin) {
-        alert(`Your API Key (save this): ${res.data.apiKey}`);
+        setApiKeyToCopy(res.data.apiKey);
+      } else {
+        navigate('/dashboard');
       }
-      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Authentication failed');
     } finally {
@@ -125,6 +128,60 @@ export default function Login() {
           </span>
         </p>
       </div>
+
+      {apiKeyToCopy && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100,
+          backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)'
+        }}>
+          <div className="login-box" style={{ width: '90%', maxWidth: 440, padding: 32, animation: 'fadeIn 0.25s ease' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--accent)', marginBottom: 16 }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+              </svg>
+              <h2 style={{ margin: 0, fontSize: 20 }}>API Key Generated</h2>
+            </div>
+            
+            <p style={{ fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.6, marginBottom: 20 }}>
+              Use this key to authorize outbound notification requests. For security reasons, this key is encrypted and <strong>cannot be recovered</strong> if lost or after closing this window.
+            </p>
+
+            <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+              <input
+                type="text"
+                readOnly
+                value={apiKeyToCopy}
+                style={{
+                  flex: 1, padding: '10px 12px', borderRadius: 6, border: '1px solid var(--border)',
+                  background: 'var(--bg)', color: 'var(--ink)', fontSize: 13, fontFamily: "'JetBrains Mono', monospace"
+                }}
+              />
+              <button
+                className="btn-ghost"
+                style={{ width: 'auto', padding: '0 16px', fontSize: 13 }}
+                onClick={() => {
+                  navigator.clipboard.writeText(apiKeyToCopy);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+              >
+                {copied ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+
+            <button
+              className="btn-primary"
+              onClick={() => {
+                setApiKeyToCopy(null);
+                navigate('/dashboard');
+              }}
+            >
+              Close & Continue →
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
