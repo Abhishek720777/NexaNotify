@@ -35,11 +35,11 @@ public class SmsSender {
         }
     }
 
-    public boolean send(NotificationJob job) {
+    public String send(NotificationJob job) {
         try {
             if (isMocked) {
                 log.info("[MOCK SMS] Sent to {}: {}", job.getTo(), job.getBody());
-                return true;
+                return "Mocked (No Twilio Credentials)";
             }
 
             Message message = Message.creator(
@@ -49,10 +49,10 @@ public class SmsSender {
             ).create();
 
             log.info("SMS sent successfully to {}, SID: {}", job.getTo(), message.getSid());
-            return true;
+            return "Success (SID: " + message.getSid() + ")";
         } catch (Exception e) {
             log.error("Failed to send SMS to {}: {}", job.getTo(), e.getMessage());
-            return false;
+            return e.getMessage() != null ? e.getMessage() : "Unknown Twilio SMTP Error";
         }
     }
 }

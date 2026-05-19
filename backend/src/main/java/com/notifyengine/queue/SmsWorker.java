@@ -30,7 +30,8 @@ public class SmsWorker {
 
     private void processJob(NotificationJob job) {
         job.setAttemptCount(job.getAttemptCount() + 1);
-        boolean success = smsSender.send(job);
+        String response = smsSender.send(job);
+        boolean success = response.startsWith("Success") || response.startsWith("Mocked");
 
         NotificationLog dbLog = logRepository.findById(job.getLogId()).orElse(null);
         if (dbLog != null) {
@@ -40,7 +41,7 @@ public class SmsWorker {
             if (success) {
                 dbLog.setStatus("SENT");
                 dbLog.setDeliveredAt(LocalDateTime.now());
-                dbLog.setProviderResponse("Success");
+                dbLog.setProviderResponse(response);
             } else {
                 if (job.getAttemptCount() >= 5) {
                     dbLog.setStatus("DEAD");
@@ -48,7 +49,7 @@ public class SmsWorker {
                     dbLog.setStatus("RETRYING");
                     queueService.requeueWithBackoff(job);
                 }
-                dbLog.setProviderResponse("Failed");
+                dbLog.setProviderResponse(response);
             }
             logRepository.save(dbLog);
         }
