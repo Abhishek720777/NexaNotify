@@ -521,51 +521,51 @@ const STEPS = [
     desc: "Trigger notifications from any application or framework using our simple, secure HTTP REST API. Authenticate with your client's X-API-KEY and trigger your workflows in under five minutes."
   },
   {
-    num: "02", title: "Route", side: "right",
-    desc: "Define template routing structures in the dashboard. The engine automatically maps incoming event requests to their designated communication channels (Email, SMS, Webhooks)."
+    num: "02", title: "Route & Template", side: "right",
+    desc: "Define templates with FreeMarker interpolation in the dashboard. The engine automatically maps incoming event requests to active template versions for Email, SMS, or Push channels."
   },
   {
-    num: "03", title: "Deliver", side: "left",
-    desc: "NotifyEngine manages retry schedules, exponential backoff, and tracks delivery status. Real-time audit logs give you a 100% visible trace from API submit to recipient delivery."
+    num: "03", title: "Deliver & Audit", side: "left",
+    desc: "SignalFlow manages retry schedules with dynamic exponential backoff and tracks delivery status. Real-time audit logs give you a 100% visible trace from API submit to recipient delivery."
   },
 ];
 
 const BENTO = [
   {
-    cls: "nn-bc-a", idx: "01", title: <>Smart <em>Routing</em></>,
-    desc: "Rules-based channel selection evaluated at send time. Priority fallbacks, user preferences, and category overrides.",
-    tags: ["Rule engine", "Fallback chains", "User preferences"]
+    cls: "nn-bc-a", idx: "01", title: <>Event <em>Routing</em></>,
+    desc: "Seamless mapping of application transaction events to designated communication channels (Email, SMS, FCM Push) automatically resolved at dispatch time.",
+    tags: ["Event matching", "Automated mapping", "User preference filters"]
   },
   {
     cls: "nn-bc-b", idx: "02", title: <>Provider <em>Abstraction</em></>,
-    desc: "Switch email, SMS, or push providers without touching application code. Credentials, rate limits, and provider quirks are handled entirely by SignalFlow. Your integration stays identical through any migration.",
-    tags: ["Zero-downtime migration", "A/B provider testing", "Cost routing"]
+    desc: "Switch email, SMS, or push configuration parameters easily. Credentials, SMTP host details, and provider endpoints are isolated completely in SignalFlow backend settings. Your application API integrations stay identical.",
+    tags: ["Isolated configuration", "Channel abstraction", "Multi-provider support"]
   },
   {
     cls: "nn-bc-c", idx: "03", title: <>Delivery <em>Guarantees</em></>,
-    desc: "At-least-once delivery with automatic retries, provider failover, and per-message audit logs.",
-    tags: ["Auto-retry", "Failover", "Audit log"]
+    desc: "Robust delivery flow featuring Redis-backed priority job queuing, automatic progressive backoff retries on failure, and absolute status tracking in our system logs.",
+    tags: ["Redis queue priority", "Exponential retry backoff", "Live audit status"]
   },
   {
     cls: "nn-bc-d", idx: "04", title: <>Unified <em>Analytics</em></>,
-    desc: "Delivery rate, open rate, bounce, and latency per channel, provider, and template in one dashboard.",
-    tags: ["Per-channel", "Template attribution", "Event export"]
+    desc: "Observe delivery success metrics, average processing latency, and detailed status logs (Sent, Pending, Retrying, Suppressed, Dead) per client and template.",
+    tags: ["Success rates", "Average processing latency", "Real-time audit log"]
   },
   {
     cls: "nn-bc-e", idx: "05", title: <>Open & <em>Extensible</em></>,
     desc: "Built on a robust Java Spring Boot and MySQL foundation. Fully self-hostable, open-source, and developer-friendly.",
-    tags: ["Spring Boot", "MySQL", "Self-Hosted"]
+    tags: ["Spring Boot", "Redis Queue", "Self-Hosted"]
   },
 ];
 
 const STATS_DATA = [
-  { prefix: "", raw: 12, suffix: "+", display: "12+", label: "Channels and provider\nintegrations" },
+  { prefix: "", raw: 3, suffix: " Channels", display: "3 Channels", label: "Email, SMS, and FCM Push\nfully production-ready" },
   { prefix: "<", raw: 50, suffix: "ms", display: "<50ms", label: "Median internal queue\nprocessing latency" },
-  { prefix: "", raw: 100, suffix: "%", display: "100%", label: "Data ownership and\ncomplete privacy" },
+  { prefix: "", raw: 100, suffix: "%", display: "100%", label: "Data ownership and\ncomplete self-hosted privacy" },
 ];
 
-const TICKER_A = ["Email", "SMS", "Push", "Slack", "WhatsApp", "Webhooks", "Discord", "Teams", "APNs", "FCM", "Postmark", "Twilio"];
-const TICKER_B = ["Route", "Retry", "Track", "Deliver", "Log", "Segment", "Template", "Failover", "Audit", "Replay", "Throttle", "Verify"];
+const TICKER_A = ["Email", "SMS", "Push", "SMTP", "FCM", "Twilio", "Postmark", "SendGrid", "Redis", "Docker", "Java"];
+const TICKER_B = ["Route", "Retry", "Track", "Deliver", "Log", "Template", "Audit", "Throttle", "Verify"];
 
 /* ─── Code token snippets dictionary ─── */
 const CODE_SNIPPETS = {
@@ -814,8 +814,8 @@ export default function Home() {
           </h1>
           <p className="nn-hero-sub">
             One API to route, deliver, and observe notifications across email,
-            SMS, push, Slack, webhooks, and more — with automatic failover
-            and full delivery observability.
+            SMS, and push channels — with fully asynchronous Redis job queues
+            and robust delivery observability.
           </p>
           <div className="nn-hero-btns">
             <button className="btn-hero-a" onClick={() => window.location.href = '/login'}>Start building →</button>
@@ -1112,7 +1112,14 @@ export default function Home() {
             <div key={hd}>
               <div className="nn-fl-hd">{hd}</div>
               <ul className="nn-fl-links">
-                {links.map(l => <li key={l}><a href="#">{l}</a></li>)}
+                {links.map(l => {
+                  let href = "#";
+                  if (l === "Documentation" || l === "API Reference") href = "/docs";
+                  if (l === "Templates") href = "/templates";
+                  if (l === "Analytics") href = "/analytics";
+                  if (l === "Channels") href = "#channels";
+                  return <li key={l}><a href={href}>{l}</a></li>;
+                })}
               </ul>
             </div>
           ))}
