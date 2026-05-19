@@ -1100,32 +1100,53 @@ export default function Home() {
           <div>
             <div className="nn-fl-logo">Signal<b>Flow</b></div>
             <p className="nn-fl-about">
-              Notification infrastructure for modern engineering teams.
-              Route, deliver, and observe across every channel.
+              A high-performance notification infrastructure project.
+              Fully self-hosted, MIT licensed, and powered by Spring Boot and Redis.
             </p>
           </div>
           {[
-            { hd: "Product", links: ["Channels", "Templates", "Analytics", "Routing", "API Reference"] },
-            { hd: "Company", links: ["About", "Blog", "Careers", "Status", "Security"] },
-            { hd: "Resources", links: ["Documentation", "Changelog", "Community", "Support", "Pricing"] },
+            {
+              hd: "Project Navigation",
+              links: [
+                { label: "Dashboard", href: "/dashboard" },
+                { label: "Templates", href: "/templates" },
+                { label: "Analytics", href: "/analytics" },
+                { label: "Documentation", href: "/docs" }
+              ]
+            },
+            {
+              hd: "Tech Stack",
+              links: [
+                { label: "Spring Boot 3.x", href: "https://spring.io" },
+                { label: "Redis Priority Queues", href: "https://redis.io" },
+                { label: "React & Vite", href: "https://react.dev" },
+                { label: "MySQL & Hibernate", href: "https://mysql.com" }
+              ]
+            },
+            {
+              hd: "Developer Info",
+              links: [
+                { label: "GitHub Repository", href: "https://github.com/Abhishek720777/SignalFlow" },
+                { label: "Developer Profile", href: "https://github.com/Abhishek720777" }
+              ]
+            }
           ].map(({ hd, links }) => (
             <div key={hd}>
               <div className="nn-fl-hd">{hd}</div>
               <ul className="nn-fl-links">
-                {links.map(l => {
-                  let href = "#";
-                  if (l === "Documentation" || l === "API Reference") href = "/docs";
-                  if (l === "Templates") href = "/templates";
-                  if (l === "Analytics") href = "/analytics";
-                  if (l === "Channels") href = "#channels";
-                  return <li key={l}><a href={href}>{l}</a></li>;
-                })}
+                {links.map(l => (
+                  <li key={l.label}>
+                    <a href={l.href} target={l.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           ))}
         </div>
         <div className="nn-footer-bot">
-          <span className="nn-footer-copy">© 2026 SignalFlow, Inc.</span>
+          <span className="nn-footer-copy">© 2026 SignalFlow · Developed by Abhishek</span>
           <div className="nn-footer-certs">
             {["SELF-HOSTED", "MIT LICENSE", "REST API"].map(c => (
               <span className="nn-footer-cert" key={c}>{c}</span>
