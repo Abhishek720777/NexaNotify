@@ -15,8 +15,16 @@ public class EmailSender {
 
     private final JavaMailSender mailSender;
 
-    @org.springframework.beans.factory.annotation.Value("${spring.mail.username}")
+    @org.springframework.beans.factory.annotation.Value("${spring.mail.username:}")
     private String mailUsername;
+
+    @org.springframework.beans.factory.annotation.Value("${resend.api-key:}")
+    private String resendApiKey;
+
+    @org.springframework.beans.factory.annotation.Value("${resend.from-email:onboarding@resend.dev}")
+    private String resendFromEmail;
+
+    private final org.springframework.web.client.RestClient restClient = org.springframework.web.client.RestClient.create();
 
     public String send(NotificationJob job) {
         // MOCK MODE for testing
@@ -28,6 +36,39 @@ public class EmailSender {
             log.info("--- MOCK EMAIL END ---");
             return "Success";
         }
+
+        // RESEND HTTP MODE
+        if (resendApiKey != null && !resendApiKey.isEmpty()) {
+            try {
+                java.util.Map<String, Object> body = java.util.Map.of(
+                        "from", resendFromEmail,
+                        "to", java.util.List.of(job.getTo()),
+                        "subject", job.getSubject(),
+                        "html", job.getBody()
+                );
+
+                org.springframework.http.ResponseEntity<String> response = restClient.post()
+                        .uri("https://api.resend.com/emails")
+                        .header("Authorization", "Bearer " + resendApiKey)
+                        .header("Content-Type", "application/json")
+                        .body(body)
+                        .retrieve()
+                        .toEntity(String.class);
+
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    log.info("Email sent successfully via Resend to {}", job.getTo());
+                    return "Success";
+                } else {
+                    log.error("Failed to send email via Resend: {}", response.getBody());
+                    return "Resend Error: " + response.getBody();
+                }
+            } catch (Exception e) {
+                log.error("Failed to send email via Resend to {}: {}", job.getTo(), e.getMessage());
+                return "Resend Connection Error: " + e.getMessage();
+            }
+        }
+
+        // FALLBACK TO SMTP MODE
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");

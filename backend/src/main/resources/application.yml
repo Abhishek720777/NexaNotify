@@ -46,6 +46,10 @@ jwt:
   secret: ${JWT_SECRET:changeme-changeme-changeme-changeme-changeme}
   expiration: 86400000
 
+resend:
+  api-key: ${RESEND_API_KEY:}
+  from-email: ${RESEND_FROM_EMAIL:onboarding@resend.dev}
+
 twilio:
   account-sid: ${TWILIO_ACCOUNT_SID:mock_sid}
   auth-token: ${TWILIO_AUTH_TOKEN:mock_token}
