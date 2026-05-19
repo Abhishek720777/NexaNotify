@@ -8,5 +8,7 @@ import java.util.List;
 @Repository
 public interface TemplateRepository extends JpaRepository<Template, Long> {
     List<Template> findByClientId(Long clientId);
+    List<Template> findByClientIdAndIsActiveTrue(Long clientId);
     List<Template> findByClientIdAndEventNameAndIsActiveTrue(Long clientId, String eventName);
+    List<Template> findByClientIdAndEventNameAndChannelOrderByVersionDesc(Long clientId, String eventName, String channel);
 }

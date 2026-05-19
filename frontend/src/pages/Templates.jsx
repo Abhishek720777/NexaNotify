@@ -53,6 +53,9 @@ export default function Templates() {
     logoUrl: '', primaryColor: '#6366f1' 
   });
   const [previewData, setPreviewData] = useState({ name: 'John Doe', orderId: 'ORD-123', total: '$199.99' });
+  const [testModal, setTestModal] = useState(null); // template object being tested
+  const [testForm, setTestForm] = useState({ to: '', mockJson: '{"name": "John Doe", "orderId": "ORD-123"}' });
+  const [testStatus, setTestStatus] = useState(null); // { type: 'success'|'error', msg }
 
   useEffect(() => {
     fetchTemplates();
@@ -141,6 +144,24 @@ export default function Templates() {
       fetchTemplates();
     } catch (err) {
       alert('Failed to update template status');
+    }
+  };
+
+  const handleSendTest = async () => {
+    setTestStatus(null);
+    let mockData = {};
+    try { mockData = JSON.parse(testForm.mockJson); } catch { return setTestStatus({ type: 'error', msg: 'Invalid JSON in mock data.' }); }
+    try {
+      await api.post('/templates/test', {
+        channel: testModal.channel,
+        to: testForm.to,
+        subject: testModal.subject,
+        body: testModal.body,
+        mockData
+      });
+      setTestStatus({ type: 'success', msg: `Test ${testModal.channel} queued to ${testForm.to}!` });
+    } catch (err) {
+      setTestStatus({ type: 'error', msg: 'Failed to queue test notification.' });
     }
   };
 
@@ -309,12 +330,57 @@ export default function Templates() {
         </div>
       )}
 
+      {/* ── SEND TEST MODAL ── */}
+      {testModal && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100
+        }}>
+          <div className="card" style={{ width: '480px', maxWidth: '95vw', padding: '2rem' }}>
+            <div className="flex justify-between items-center mb-4">
+              <h3 style={{ margin: 0 }}>Send Test Notification</h3>
+              <button onClick={() => { setTestModal(null); setTestStatus(null); }} style={{ background: 'transparent', border: 'none', color: 'var(--ink)', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
+            </div>
+            <div style={{ marginBottom: '0.75rem', padding: '0.5rem 0.75rem', background: 'var(--accent-bg)', borderRadius: '6px', fontSize: '0.8rem', color: 'var(--accent)' }}>
+              Template: <strong>{testModal.eventName}</strong> &nbsp;|&nbsp; Channel: <strong>{testModal.channel}</strong> &nbsp;|&nbsp; v{testModal.version || 1}
+            </div>
+            <label className="form-label">Destination ({testModal.channel === 'EMAIL' ? 'Email address' : testModal.channel === 'SMS' ? 'Phone number' : 'FCM Token'})</label>
+            <input
+              className="form-input"
+              style={{ marginBottom: '1rem' }}
+              placeholder={testModal.channel === 'EMAIL' ? 'you@example.com' : testModal.channel === 'SMS' ? '+91XXXXXXXXXX' : 'FCM device token'}
+              value={testForm.to}
+              onChange={e => setTestForm({ ...testForm, to: e.target.value })}
+            />
+            <label className="form-label">Mock Data (JSON)</label>
+            <textarea
+              className="form-input"
+              rows={5}
+              style={{ fontFamily: 'monospace', fontSize: '0.8rem', marginBottom: '1rem', resize: 'vertical' }}
+              value={testForm.mockJson}
+              onChange={e => setTestForm({ ...testForm, mockJson: e.target.value })}
+            />
+            {testStatus && (
+              <div style={{ padding: '0.6rem 1rem', borderRadius: '6px', marginBottom: '1rem', fontSize: '0.85rem',
+                background: testStatus.type === 'success' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+                color: testStatus.type === 'success' ? 'var(--success)' : 'var(--danger)',
+                border: `1px solid ${testStatus.type === 'success' ? 'var(--success)' : 'var(--danger)'}`
+              }}>
+                {testStatus.msg}
+              </div>
+            )}
+            <button className="btn-primary" style={{ width: '100%' }} onClick={handleSendTest}>Send Test Now</button>
+          </div>
+        </div>
+      )}
+
       <div className="table-container">
         <table>
           <thead>
             <tr>
               <th>Event</th>
               <th>Channel</th>
+              <th>Version</th>
               <th>Created</th>
               <th>Status</th>
               <th>Actions</th>
@@ -325,6 +391,7 @@ export default function Templates() {
               <tr key={t.id}>
                 <td style={{fontWeight: 600}}>{t.eventName}</td>
                 <td><span className="badge info">{t.channel}</span></td>
+                <td><span style={{ fontSize: '0.8rem', color: 'var(--ink-3)', fontFamily: 'monospace' }}>v{t.version || 1}</span></td>
                 <td style={{color: 'var(--ink-3)', fontSize: '0.875rem'}}>{new Date(t.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</td>
                 <td>
                   <span className={`badge ${t.active ? 'success' : 'danger'}`}>
@@ -333,6 +400,7 @@ export default function Templates() {
                 </td>
                 <td style={{display: 'flex', gap: '0.5rem', alignItems: 'center'}}>
                   <button className="btn-primary btn-sm" style={{width: 'auto'}} onClick={() => handleEdit(t)}>Edit</button>
+                  <button className="btn-ghost btn-sm" onClick={() => { setTestModal(t); setTestStatus(null); setTestForm({ to: '', mockJson: '{"name": "John Doe", "orderId": "ORD-123"}' }); }}>Test</button>
                   <button 
                     className="btn-ghost btn-sm" 
                     onClick={() => handleToggleActive(t)}
@@ -344,7 +412,7 @@ export default function Templates() {
             ))}
             {templates.length === 0 && (
               <tr>
-                <td colSpan="5" style={{textAlign: 'center', padding: '3rem', color: 'var(--ink-3)'}}>No templates found. Create one to get started.</td>
+                <td colSpan="6" style={{textAlign: 'center', padding: '3rem', color: 'var(--ink-3)'}}>No templates found. Create one to get started.</td>
               </tr>
             )}
           </tbody>

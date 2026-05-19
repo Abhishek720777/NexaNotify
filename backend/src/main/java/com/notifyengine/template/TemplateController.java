@@ -1,5 +1,7 @@
 package com.notifyengine.template;
 
+import com.notifyengine.notification.NotificationService;
+import com.notifyengine.template.TemplateTestRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/templates")
@@ -19,6 +22,7 @@ import java.util.List;
 public class TemplateController {
 
     private final TemplateService templateService;
+    private final NotificationService notificationService;
 
     @PostMapping
     public ResponseEntity<Template> createTemplate(@RequestBody Template template) {
@@ -39,5 +43,17 @@ public class TemplateController {
     public ResponseEntity<Void> deleteTemplate(@PathVariable Long id) {
         templateService.deleteTemplate(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/test")
+    public ResponseEntity<Map<String, String>> sendTestNotification(@RequestBody TemplateTestRequest req) {
+        notificationService.sendTestNotification(
+                req.getChannel(),
+                req.getTo(),
+                req.getSubject(),
+                req.getBody(),
+                req.getMockData()
+        );
+        return ResponseEntity.ok(Map.of("status", "queued", "message", "Test notification queued for " + req.getChannel()));
     }
 }

@@ -39,6 +39,30 @@ public class NotificationService {
     private final RateLimiter rateLimiter;
     private final ObjectMapper objectMapper;
 
+    public void sendTestNotification(String channel, String to, String subject, String body, Map<String, Object> mockData) {
+        String resolvedBody = resolveTemplate(body, mockData != null ? mockData : Map.of());
+        String resolvedSubject = subject != null ? resolveTemplate(subject, mockData != null ? mockData : Map.of()) : "[TEST] Notification";
+
+        // Create a lightweight test log entry so workers can track the delivery
+        NotificationLog testLog = new NotificationLog();
+        testLog.setChannel(channel);
+        testLog.setStatus("TEST");
+        testLog = logRepository.save(testLog);
+
+        NotificationJob job = NotificationJob.builder()
+                .logId(testLog.getId())
+                .channel(channel.toUpperCase())
+                .to(to)
+                .subject(resolvedSubject)
+                .body(resolvedBody)
+                .attemptCount(0)
+                .priority("HIGH")
+                .build();
+
+        queueService.pushJob(job);
+        log.info("Test notification queued for channel={} to={}", channel, to);
+    }
+
     @Transactional
     public void processNotificationRequest(Client client, Map<String, Object> payload) {
         if (!rateLimiter.isAllowed(client.getApiKey())) {

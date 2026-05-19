@@ -55,6 +55,9 @@ public class Template {
     @Column(nullable = false)
     private boolean isActive = true;
 
+    @Column(nullable = false)
+    private Integer version = 1;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

@@ -26,28 +26,36 @@ public class TemplateService {
 
     public List<Template> getAllTemplates() {
         Client client = getCurrentClient();
-        return templateRepository.findByClientId(client.getId());
+        return templateRepository.findByClientIdAndIsActiveTrue(client.getId());
     }
 
     @Transactional
     public Template updateTemplate(Long id, Template templateDetails) {
         Client client = getCurrentClient();
-        Template template = templateRepository.findById(id)
+        Template oldTemplate = templateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Template not found"));
 
-        if (!template.getClient().getId().equals(client.getId())) {
+        if (!oldTemplate.getClient().getId().equals(client.getId())) {
             throw new RuntimeException("Unauthorized");
         }
 
-        template.setEventName(templateDetails.getEventName());
-        template.setChannel(templateDetails.getChannel());
-        template.setSubject(templateDetails.getSubject());
-        template.setBody(templateDetails.getBody());
-        template.setActive(templateDetails.isActive());
-        template.setLogoUrl(templateDetails.getLogoUrl());
-        template.setPrimaryColor(templateDetails.getPrimaryColor());
+        // Mark old as inactive
+        oldTemplate.setActive(false);
+        templateRepository.save(oldTemplate);
 
-        return templateRepository.save(template);
+        // Create new version
+        Template newTemplate = new Template();
+        newTemplate.setClient(client);
+        newTemplate.setEventName(templateDetails.getEventName());
+        newTemplate.setChannel(templateDetails.getChannel());
+        newTemplate.setSubject(templateDetails.getSubject());
+        newTemplate.setBody(templateDetails.getBody());
+        newTemplate.setActive(templateDetails.isActive());
+        newTemplate.setLogoUrl(templateDetails.getLogoUrl());
+        newTemplate.setPrimaryColor(templateDetails.getPrimaryColor());
+        newTemplate.setVersion(oldTemplate.getVersion() + 1);
+
+        return templateRepository.save(newTemplate);
     }
 
     @Transactional
