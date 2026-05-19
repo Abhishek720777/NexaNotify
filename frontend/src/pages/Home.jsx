@@ -434,10 +434,10 @@ body {
 .btn-cta-b:hover { border-color: var(--ink-2); }
 
 /* ── Footer ── */
-.nn-footer { background: var(--dark); padding: 80px 52px 44px; }
+.nn-footer { background: var(--dark); padding: 40px 52px; }
 .nn-footer-top {
-  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px;
-  margin-bottom: 72px; padding-bottom: 72px;
+  display: grid; grid-template-columns: 2fr 1fr; gap: 40px;
+  margin-bottom: 30px; padding-bottom: 30px;
   border-bottom: 1px solid rgba(255,255,255,.06);
 }
 .nn-fl-logo {
@@ -477,11 +477,8 @@ body {
   .nn-stat { border-right: none; padding: 40px 0; }
   .nn-cta { padding: 80px 24px; background: var(--bg); color: var(--ink); }
   .nn-cta-inner { grid-template-columns: 1fr; gap: 40px; }
-  .nn-tl-step { grid-template-columns: 1fr; min-height: auto; }
-  .nn-tl-content { padding: 16px 0; text-align: left !important; }
-  .nn-tl-svg-wrap { display: none; }
-  .nn-footer { padding: 60px 24px 36px; }
-  .nn-footer-top { grid-template-columns: 1fr 1fr; }
+  .nn-footer { padding: 30px 24px; }
+  .nn-footer-top { grid-template-columns: 1fr; gap: 20px; }
 }
 `;
 
@@ -1105,24 +1102,6 @@ export default function Home() {
             </p>
           </div>
           {[
-            {
-              hd: "Project Navigation",
-              links: [
-                { label: "Dashboard", href: "/dashboard" },
-                { label: "Templates", href: "/templates" },
-                { label: "Analytics", href: "/analytics" },
-                { label: "Documentation", href: "/docs" }
-              ]
-            },
-            {
-              hd: "Tech Stack",
-              links: [
-                { label: "Spring Boot 3.x", href: "https://spring.io" },
-                { label: "Redis Priority Queues", href: "https://redis.io" },
-                { label: "React & Vite", href: "https://react.dev" },
-                { label: "MySQL & Hibernate", href: "https://mysql.com" }
-              ]
-            },
             {
               hd: "Developer Info",
               links: [
