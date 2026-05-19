@@ -9,22 +9,23 @@ export default function Analytics() {
   });
   const [failedRequests, setFailedRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [date]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const summaryRes = await api.get('/analytics/summary');
+      const summaryRes = await api.get(`/analytics/summary?date=${date}`);
       setSummary(summaryRes.data);
 
-      const channelRes = await api.get('/analytics/by-channel');
+      const channelRes = await api.get(`/analytics/by-channel?date=${date}`);
       const formattedChannelData = [
-        { name: 'Email', value: channelRes.data.EMAIL || 0, color: '#3b82f6' },
-        { name: 'SMS', value: channelRes.data.SMS || 0, color: '#10b981' },
-        { name: 'Push', value: channelRes.data.PUSH || 0, color: '#f59e0b' }
+        { name: 'Email', value: channelRes.data.EMAIL || 0, color: 'var(--accent)' },
+        { name: 'SMS', value: channelRes.data.SMS || 0, color: 'var(--ink-3)' },
+        { name: 'Push', value: channelRes.data.PUSH || 0, color: 'var(--dark-2)' }
       ].filter(d => d.value > 0);
       
       if (formattedChannelData.length === 0) {
@@ -33,8 +34,8 @@ export default function Analytics() {
       setChannelData(formattedChannelData);
 
       // Fetch recent requests to find failures
-      const logsRes = await api.get('/logs');
-      const failures = logsRes.data.filter(req => req.status === 'FAILED' || req.status === 'ERROR');
+      const logsRes = await api.get(`/logs?date=${date}&page=0&size=100`);
+      const failures = (logsRes.data.content || []).filter(req => req.status === 'FAILED' || req.status === 'ERROR');
       setFailedRequests(failures);
     } catch (err) {
       console.error(err);
@@ -54,13 +55,20 @@ export default function Analytics() {
     <div style={{ maxWidth: '100%' }}>
       <div className="flex justify-between items-center mb-4">
         <h1 className="page-title" style={{ margin: 0 }}>System Analytics</h1>
-        <button 
-          onClick={fetchData} 
-          className="btn-sm" 
-          style={{ background: 'var(--bg-panel)', border: '1px solid var(--border)', color: 'white', cursor: 'pointer', borderRadius: '6px' }}
-        >
-          Refresh Data
-        </button>
+        <div className="flex gap-4 items-center">
+          <input 
+            type="date" 
+            value={date} 
+            onChange={(e) => setDate(e.target.value)} 
+            style={{padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--ink)'}}
+          />
+          <button 
+            onClick={fetchData} 
+            className="btn-ghost btn-sm" 
+          >
+            Refresh Data
+          </button>
+        </div>
       </div>
 
       {/* Metrics Row */}
@@ -75,11 +83,11 @@ export default function Analytics() {
         </div>
         <div className="card" style={{ padding: '0.75rem 1rem', borderLeft: summary.failedToday > 0 ? '3px solid var(--danger)' : '1px solid var(--border)' }}>
           <h3 style={{ fontSize: '0.7rem', marginBottom: '0.2rem' }}>Total Failures</h3>
-          <div className="value" style={{ fontSize: '1.5rem', color: summary.failedToday > 0 ? 'var(--danger)' : 'var(--text-muted)' }}>{summary.failedToday}</div>
+          <div className="value" style={{ fontSize: '1.5rem', color: summary.failedToday > 0 ? 'var(--danger)' : 'var(--ink-3)' }}>{summary.failedToday}</div>
         </div>
         <div className="card" style={{ padding: '0.75rem 1rem' }}>
           <h3 style={{ fontSize: '0.7rem', marginBottom: '0.2rem' }}>Queue Backlog</h3>
-          <div className="value" style={{ fontSize: '1.5rem', color: summary.pendingToday > 0 ? 'var(--warning)' : 'var(--text-muted)' }}>{summary.pendingToday}</div>
+          <div className="value" style={{ fontSize: '1.5rem', color: summary.pendingToday > 0 ? 'var(--warning)' : 'var(--ink-3)' }}>{summary.pendingToday}</div>
         </div>
       </div>
 
@@ -101,7 +109,7 @@ export default function Analytics() {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={{ backgroundColor: 'var(--bg-panel)', borderColor: 'var(--border)', color: 'var(--text-main)', fontSize: '0.75rem' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--ink)', fontSize: '0.75rem' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -112,9 +120,9 @@ export default function Analytics() {
           <div style={{ width: '100%', height: '220px' }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={channelData}>
-                <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={10} />
-                <YAxis stroke="var(--text-muted)" fontSize={10} />
-                <Tooltip contentStyle={{ backgroundColor: 'var(--bg-panel)', borderColor: 'var(--border)', color: 'var(--text-main)', fontSize: '0.75rem' }} cursor={{ fill: 'var(--bg-panel-hover)' }} />
+                <XAxis dataKey="name" stroke="var(--ink-3)" fontSize={10} />
+                <YAxis stroke="var(--ink-3)" fontSize={10} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--ink)', fontSize: '0.75rem' }} cursor={{ fill: 'var(--accent-bg)' }} />
                 <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                   {channelData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -133,7 +141,7 @@ export default function Analytics() {
             <span style={{ height: '8px', width: '8px', borderRadius: '50%', background: failedRequests.length > 0 ? 'var(--danger)' : 'var(--success)', display: 'inline-block', boxShadow: failedRequests.length > 0 ? '0 0 8px var(--danger)' : '0 0 8px var(--success)' }} />
             <h3 style={{ margin: 0, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Root Cause Failure Analysis</h3>
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{failedRequests.length} Issues Identified</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--ink-3)' }}>{failedRequests.length} Issues Identified</span>
         </div>
 
         {failedRequests.length > 0 ? (
@@ -153,7 +161,7 @@ export default function Analytics() {
                   <tr key={req.id}>
                     <td style={{ fontSize: '0.8rem', padding: '0.5rem', fontWeight: 600 }}>#{req.id}</td>
                     <td style={{ fontSize: '0.8rem', padding: '0.5rem' }}><code>{req.eventName}</code></td>
-                    <td style={{ fontSize: '0.8rem', padding: '0.5rem', color: 'var(--text-muted)' }}>
+                    <td style={{ fontSize: '0.8rem', padding: '0.5rem', color: 'var(--ink-3)' }}>
                       {req.user ? `${req.user.email || req.user.phone} (${req.user.externalUserId})` : 'Unknown / Missing User'}
                     </td>
                     <td style={{ fontSize: '0.8rem', padding: '0.5rem' }}>
@@ -161,8 +169,8 @@ export default function Analytics() {
                         {req.status === 'ERROR' ? 'Internal Error' : 'Template/User Missing'}
                       </span>
                     </td>
-                    <td style={{ fontSize: '0.8rem', padding: '0.5rem', color: 'var(--text-muted)' }}>
-                      {new Date(req.createdAt).toLocaleString()}
+                    <td style={{ fontSize: '0.8rem', padding: '0.5rem', color: 'var(--ink-3)' }}>
+                      {new Date(req.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
                     </td>
                   </tr>
                 ))}
@@ -170,9 +178,9 @@ export default function Analytics() {
             </table>
           </div>
         ) : (
-          <div style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--success)', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '6px', border: '1px dashed rgba(16, 185, 129, 0.2)' }}>
+          <div style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--success)', background: 'var(--accent-bg)', borderRadius: '6px', border: '1px dashed var(--accent)' }}>
             <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.25rem' }}>🎉 All Channels Operating Normatively</div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>No failed notification requests registered in the current logging window.</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--ink-2)' }}>No failed notification requests registered in the current logging window.</div>
           </div>
         )}
       </div>

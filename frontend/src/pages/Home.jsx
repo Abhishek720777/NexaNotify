@@ -116,32 +116,55 @@ body {
 }
 .btn-hero-b:hover { border-color: var(--ink-2); }
 
-/* Hero right: notification card stack */
+/* Hero right: live metrics widget */
 .nn-hero-r { position: relative; z-index: 2; }
-.nn-nc {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 6px; padding: 16px 20px; position: relative;
-  overflow: hidden; margin-bottom: 12px;
+.nn-widget {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden;
+  box-shadow: 0 4px 32px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.04);
 }
-.nn-nc::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 3px; border-radius: 3px 0 0 3px;
+.nn-widget-hd {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
 }
-.nn-nc.c1::before { background: var(--accent); }
-.nn-nc.c2::before { background: #818CF8; }
-.nn-nc.c3::before { background: #FBBF24; }
-.nn-nc.c4::before { background: var(--ink-3); }
-.nn-nc-top {
-  display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+.nn-widget-title {
+  font-size: 12px; font-weight: 600; color: var(--ink); letter-spacing: .2px;
 }
-.nn-nc-ch {
-  font-size: 10px; font-weight: 600; text-transform: uppercase;
-  letter-spacing: 1.5px; color: var(--ink-3);
+.nn-widget-live {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 500; color: var(--accent); letter-spacing: .5px;
   font-family: 'JetBrains Mono', monospace;
 }
-.nn-nc-ok { font-size: 10px; font-weight: 500; color: var(--accent); font-family: 'JetBrains Mono', monospace; }
-.nn-nc-lines { display: flex; flex-direction: column; gap: 6px; }
-.nn-nc-line { height: 6px; border-radius: 2px; background: var(--border); }
+.nn-widget-live-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+  animation: livepulse 2s ease-in-out infinite;
+}
+@keyframes livepulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .4; transform: scale(.8); }
+}
+.nn-widget-metrics { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.nn-widget-metric {}
+.nn-widget-metric-row {
+  display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;
+}
+.nn-widget-metric-lbl { font-size: 11px; color: var(--ink-3); font-weight: 400; }
+.nn-widget-metric-val { font-size: 18px; font-weight: 700; color: var(--ink); font-family: 'Barlow Condensed', sans-serif; letter-spacing: -.5px; }
+.nn-widget-metric-val span { font-size: 11px; font-weight: 400; color: var(--accent); margin-left: 4px; }
+.nn-widget-bar-bg { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.nn-widget-bar-fill { height: 100%; border-radius: 2px; background: var(--accent); }
+.nn-widget-chart { padding: 0 20px 20px; }
+.nn-widget-chart-lbl { font-size: 10px; color: var(--ink-3); margin-bottom: 10px; letter-spacing: .3px; }
+.nn-widget-bars { display: flex; align-items: flex-end; gap: 5px; height: 56px; }
+.nn-widget-bar-col { flex: 1; border-radius: 2px 2px 0 0; background: var(--accent); opacity: .15; transition: opacity .2s; }
+.nn-widget-bar-col.hi { opacity: 1; }
+.nn-widget-bar-col:hover { opacity: .7; }
+.nn-widget-footer {
+  padding: 12px 20px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.nn-widget-footer-stat { font-size: 11px; color: var(--ink-3); }
+.nn-widget-footer-stat b { color: var(--ink); font-weight: 600; }
 
 /* ── Marquee ── */
 .nn-mq { background: var(--dark); overflow: hidden; }
@@ -515,7 +538,7 @@ const BENTO = [
   },
   {
     cls: "nn-bc-b", idx: "02", title: <>Provider <em>Abstraction</em></>,
-    desc: "Switch email, SMS, or push providers without touching application code. Credentials, rate limits, and provider quirks are handled entirely by NexaNotify. Your integration stays identical through any migration.",
+    desc: "Switch email, SMS, or push providers without touching application code. Credentials, rate limits, and provider quirks are handled entirely by SignalFlow. Your integration stays identical through any migration.",
     tags: ["Zero-downtime migration", "A/B provider testing", "Cost routing"]
   },
   {
@@ -756,7 +779,7 @@ export default function Home() {
 
       {/* ════ NAV ════ */}
       <nav className="nn-nav" ref={navRef}>
-        <div className="nn-logo" style={{ cursor: 'pointer' }} onClick={() => window.location.href = '/'}>Nexa<b>Notify</b></div>
+        <div className="nn-logo" style={{ cursor: 'pointer' }} onClick={() => window.location.href = '/'}>Signal<b>Flow</b></div>
         <ul className="nn-nav-links">
           {["Channels", "Architecture", "Features", "Pricing", "Docs"].map(l => (
             <li key={l}><a href={`#${l.toLowerCase()}`}>{l}</a></li>
@@ -794,25 +817,50 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Right: notification delivery status cards */}
+        {/* Right: live metrics widget */}
         <div className="nn-hero-r">
-          {[
-            { cls: "c1", ch: "EMAIL · SMTP", status: "delivered", w1: "76%", w2: "52%" },
-            { cls: "c2", ch: "SMS · TWILIO", status: "delivered", w1: "62%", w2: "41%" },
-            { cls: "c3", ch: "PUSH · FCM", status: "delivered", w1: "84%", w2: "58%" },
-            { cls: "c4", ch: "TEMPLATE · FREEMARKER", status: "compiled", w1: "68%", w2: "45%" },
-          ].map(({ cls, ch, status, w1, w2 }) => (
-            <div className={`nn-nc ${cls}`} key={ch}>
-              <div className="nn-nc-top">
-                <span className="nn-nc-ch">{ch}</span>
-                <span className="nn-nc-ok">{status}</span>
-              </div>
-              <div className="nn-nc-lines">
-                <div className="nn-nc-line" style={{ width: w1 }} />
-                <div className="nn-nc-line" style={{ width: w2 }} />
+          <div className="nn-widget">
+            <div className="nn-widget-hd">
+              <span className="nn-widget-title">Delivery Overview</span>
+              <span className="nn-widget-live">
+                <span className="nn-widget-live-dot" />
+                LIVE
+              </span>
+            </div>
+            <div className="nn-widget-metrics">
+              {[
+                { lbl: "Delivered today", val: "12,847", suffix: "+2.4%", fill: "91%" },
+                { lbl: "Success rate", val: "98.7%", suffix: "↑ 0.3%", fill: "98.7%" },
+                { lbl: "Avg latency", val: "47ms", suffix: "stable", fill: "62%" },
+              ].map(({ lbl, val, suffix, fill }) => (
+                <div className="nn-widget-metric" key={lbl}>
+                  <div className="nn-widget-metric-row">
+                    <span className="nn-widget-metric-lbl">{lbl}</span>
+                    <span className="nn-widget-metric-val">{val}<span>{suffix}</span></span>
+                  </div>
+                  <div className="nn-widget-bar-bg">
+                    <div className="nn-widget-bar-fill" style={{ width: fill }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="nn-widget-chart">
+              <div className="nn-widget-chart-lbl">Last 7 days · notifications sent</div>
+              <div className="nn-widget-bars">
+                {[45, 62, 38, 71, 55, 83, 100].map((h, i) => (
+                  <div
+                    key={i}
+                    className={`nn-widget-bar-col${i === 6 ? ' hi' : ''}`}
+                    style={{ height: `${h}%` }}
+                  />
+                ))}
               </div>
             </div>
-          ))}
+            <div className="nn-widget-footer">
+              <span className="nn-widget-footer-stat">Channels: <b>Email · SMS · Push</b></span>
+              <span className="nn-widget-footer-stat">Engine: <b>Java / Redis</b></span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1044,7 +1092,7 @@ export default function Home() {
       <footer className="nn-footer">
         <div className="nn-footer-top">
           <div>
-            <div className="nn-fl-logo">Nexa<b>Notify</b></div>
+            <div className="nn-fl-logo">Signal<b>Flow</b></div>
             <p className="nn-fl-about">
               Notification infrastructure for modern engineering teams.
               Route, deliver, and observe across every channel.
@@ -1064,7 +1112,7 @@ export default function Home() {
           ))}
         </div>
         <div className="nn-footer-bot">
-          <span className="nn-footer-copy">© 2026 NexaNotify, Inc.</span>
+          <span className="nn-footer-copy">© 2026 SignalFlow, Inc.</span>
           <div className="nn-footer-certs">
             {["SELF-HOSTED", "MIT LICENSE", "REST API"].map(c => (
               <span className="nn-footer-cert" key={c}>{c}</span>

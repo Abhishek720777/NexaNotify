@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,17 +30,19 @@ public class AnalyticsService {
         return (Client) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public Map<String, Object> getSummary() {
+    public Map<String, Object> getSummary(LocalDate date) {
+        if (date == null) date = LocalDate.now();
         Client client = getCurrentClient();
-        LocalDateTime todayStart = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay();
 
-        long sent = logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtAfter(client.getId(), "SENT", todayStart);
-        long failed = logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtAfter(client.getId(), "DEAD", todayStart) +
-                      requestRepository.countByClientIdAndStatusAndCreatedAtAfter(client.getId(), "FAILED", todayStart);
-        long pending = logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtAfter(client.getId(), "PENDING", todayStart) +
-                       logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtAfter(client.getId(), "RETRYING", todayStart);
+        long sent = logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtBetween(client.getId(), "SENT", start, end);
+        long failed = logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtBetween(client.getId(), "DEAD", start, end) +
+                      requestRepository.countByClientIdAndStatusAndCreatedAtBetween(client.getId(), "FAILED", start, end);
+        long pending = logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtBetween(client.getId(), "PENDING", start, end) +
+                       logRepository.countByRequest_ClientIdAndStatusAndLastAttemptedAtBetween(client.getId(), "RETRYING", start, end);
         
-        long totalRequests = requestRepository.countByClientIdAndCreatedAtAfter(client.getId(), todayStart);
+        long totalRequests = requestRepository.countByClientIdAndCreatedAtBetween(client.getId(), start, end);
 
         Map<String, Object> summary = new HashMap<>();
         summary.put("sentToday", sent);
@@ -47,13 +52,15 @@ public class AnalyticsService {
         return summary;
     }
 
-    public Map<String, Object> getByChannel() {
+    public Map<String, Object> getByChannel(LocalDate date) {
+        if (date == null) date = LocalDate.now();
         Client client = getCurrentClient();
-        LocalDateTime todayStart = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay();
 
-        long email = logRepository.countByRequest_ClientIdAndChannelAndLastAttemptedAtAfter(client.getId(), "EMAIL", todayStart);
-        long sms = logRepository.countByRequest_ClientIdAndChannelAndLastAttemptedAtAfter(client.getId(), "SMS", todayStart);
-        long push = logRepository.countByRequest_ClientIdAndChannelAndLastAttemptedAtAfter(client.getId(), "PUSH", todayStart);
+        long email = logRepository.countByRequest_ClientIdAndChannelAndLastAttemptedAtBetween(client.getId(), "EMAIL", start, end);
+        long sms = logRepository.countByRequest_ClientIdAndChannelAndLastAttemptedAtBetween(client.getId(), "SMS", start, end);
+        long push = logRepository.countByRequest_ClientIdAndChannelAndLastAttemptedAtBetween(client.getId(), "PUSH", start, end);
 
         Map<String, Object> byChannel = new HashMap<>();
         byChannel.put("EMAIL", email);
@@ -62,12 +69,12 @@ public class AnalyticsService {
         return byChannel;
     }
 
-    public List<NotificationRequest> getRecentRequests() {
+    public Page<NotificationRequest> getRecentRequests(LocalDate date, Pageable pageable) {
+        if (date == null) date = LocalDate.now();
         Client client = getCurrentClient();
-        return requestRepository.findByClientIdOrderByCreatedAtDesc(client.getId())
-                .stream()
-                .limit(50) // Just return latest 50 for logs page
-                .toList();
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay();
+        return requestRepository.findByClientIdAndCreatedAtBetweenOrderByCreatedAtDesc(client.getId(), start, end, pageable);
     }
 
     public List<NotificationLog> getLogsForRequest(Long requestId) {

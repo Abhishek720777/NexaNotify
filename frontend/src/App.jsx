@@ -15,7 +15,7 @@ function Layout({ children }) {
   return (
     <div className="layout">
       <aside className="sidebar">
-        <div className="logo">NotifyEngine</div>
+        <div className="logo">Signal<b>Flow</b></div>
         <nav>
           <a href="/dashboard" className={window.location.pathname === '/dashboard' ? 'active' : ''}>Dashboard</a>
           <a href="/templates" className={window.location.pathname === '/templates' ? 'active' : ''}>Templates</a>

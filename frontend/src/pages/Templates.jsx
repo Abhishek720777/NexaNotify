@@ -168,18 +168,18 @@ export default function Templates() {
               <div className="flex gap-4">
                 <button 
                   onClick={() => setActiveTab('design')}
-                  style={{background: 'transparent', border: 'none', color: activeTab === 'design' ? 'var(--primary)' : '#999', fontWeight: 700, cursor: 'pointer', fontSize: '1.2rem', borderBottom: activeTab === 'design' ? '2px solid var(--primary)' : 'none', paddingBottom: '5px'}}
+                  style={{background: 'transparent', border: 'none', color: activeTab === 'design' ? 'var(--accent)' : 'var(--ink-3)', fontWeight: 700, cursor: 'pointer', fontSize: '1.2rem', borderBottom: activeTab === 'design' ? '2px solid var(--accent)' : 'none', paddingBottom: '5px'}}
                 >
                   1. Design Template
                 </button>
                 <button 
                   onClick={() => setActiveTab('branding')}
-                  style={{background: 'transparent', border: 'none', color: activeTab === 'branding' ? 'var(--primary)' : '#999', fontWeight: 700, cursor: 'pointer', fontSize: '1.2rem', borderBottom: activeTab === 'branding' ? '2px solid var(--primary)' : 'none', paddingBottom: '5px'}}
+                  style={{background: 'transparent', border: 'none', color: activeTab === 'branding' ? 'var(--accent)' : 'var(--ink-3)', fontWeight: 700, cursor: 'pointer', fontSize: '1.2rem', borderBottom: activeTab === 'branding' ? '2px solid var(--accent)' : 'none', paddingBottom: '5px'}}
                 >
                   2. Project Branding
                 </button>
               </div>
-              <button onClick={() => setIsModalOpen(false)} style={{background: 'transparent', border: 'none', color: 'white', fontSize: '1.5rem', cursor: 'pointer'}}>&times;</button>
+              <button onClick={() => setIsModalOpen(false)} style={{background: 'transparent', border: 'none', color: 'var(--ink)', fontSize: '1.5rem', cursor: 'pointer'}}>&times;</button>
             </div>
 
             <div className="template-form">
@@ -232,7 +232,7 @@ export default function Templates() {
                     <div className="branding-controls">
                       <div className="form-group">
                         <label>Project Logo</label>
-                        <div style={{display: 'flex', gap: '1rem', alignItems: 'center', background: '#000', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border)'}}>
+                        <div style={{display: 'flex', gap: '1rem', alignItems: 'center', background: 'var(--bg)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border)'}}>
                           <img 
                             src={formData.logoUrl || 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'} 
                             style={{height: '50px', background: '#fff', padding: '5px', borderRadius: '4px', maxWidth: '80px', objectFit: 'contain'}} 
@@ -247,9 +247,9 @@ export default function Templates() {
                               value={formData.logoUrl} 
                               onChange={(e) => setFormData({...formData, logoUrl: e.target.value})} 
                               placeholder="Paste public logo URL (e.g. https://...)" 
-                              style={{fontSize: '0.8rem', padding: '6px 10px', width: '100%', background: '#121214', border: '1px solid #333', borderRadius: '4px', color: '#fff'}}
+                              style={{fontSize: '0.8rem', padding: '6px 10px', width: '100%', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '4px', color: 'var(--ink)'}}
                             />
-                            <p style={{fontSize: '0.7rem', color: '#666', marginTop: '5px'}}>Upload a logo file or paste a public image URL to use via {"${brandLogo}"}</p>
+                            <p style={{fontSize: '0.7rem', color: 'var(--ink-2)', marginTop: '5px'}}>Upload a logo file or paste a public image URL to use via {"${brandLogo}"}</p>
                           </div>
                         </div>
                       </div>
@@ -263,17 +263,17 @@ export default function Templates() {
                       </div>
                       <div className="form-group">
                         <label>Branding Helper</label>
-                        <div style={{fontSize: '0.875rem', color: 'var(--text-muted)', background: '#18181b', padding: '1rem', borderRadius: '8px', border: '1px dashed #333'}}>
+                        <div style={{fontSize: '0.875rem', color: 'var(--ink-2)', background: 'var(--bg)', padding: '1rem', borderRadius: '8px', border: '1px dashed var(--border)'}}>
                           Use these in your HTML:
-                          <code style={{display: 'block', marginTop: '5px', color: 'var(--primary)'}}>{"<img src=\"${brandLogo}\" />"}</code>
-                          <code style={{display: 'block', marginTop: '5px', color: 'var(--primary)'}}>{"<h1 style=\"color: ${brandColor}\">Hello</h1>"}</code>
+                          <code style={{display: 'block', marginTop: '5px', color: 'var(--accent)'}}>{"<img src=\"${brandLogo}\" />"}</code>
+                          <code style={{display: 'block', marginTop: '5px', color: 'var(--accent)'}}>{"<h1 style=\"color: ${brandColor}\">Hello</h1>"}</code>
                         </div>
                       </div>
                     </div>
                   )}
                   
                   <div className="flex gap-4" style={{marginTop: 'auto', paddingTop: '1rem'}}>
-                    {activeTab === 'branding' && <button type="button" className="btn-primary" style={{background: '#3f3f46'}} onClick={() => setActiveTab('design')}>Back to Design</button>}
+                    {activeTab === 'branding' && <button type="button" className="btn-ghost" onClick={() => setActiveTab('design')}>Back to Design</button>}
                     {activeTab === 'design' ? (
                       <button type="button" className="btn-primary" onClick={() => setActiveTab('branding')}>Next: Add Branding Assets</button>
                     ) : (
@@ -299,7 +299,7 @@ export default function Templates() {
                       </div>
                     )}
                   </div>
-                  <p style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem'}}>
+                  <p style={{fontSize: '0.75rem', color: 'var(--ink-3)', marginTop: '1rem'}}>
                     This preview uses your project-specific logo and brand color variables.
                   </p>
                 </div>
@@ -325,23 +325,16 @@ export default function Templates() {
               <tr key={t.id}>
                 <td style={{fontWeight: 600}}>{t.eventName}</td>
                 <td><span className="badge info">{t.channel}</span></td>
-                <td style={{color: 'var(--text-muted)', fontSize: '0.875rem'}}>{new Date(t.createdAt).toLocaleDateString()}</td>
+                <td style={{color: 'var(--ink-3)', fontSize: '0.875rem'}}>{new Date(t.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</td>
                 <td>
                   <span className={`badge ${t.active ? 'success' : 'danger'}`}>
                     {t.active ? 'Active' : 'Inactive'}
                   </span>
                 </td>
                 <td style={{display: 'flex', gap: '0.5rem', alignItems: 'center'}}>
-                  <button className="btn-sm" style={{background: 'var(--primary)', color: 'white', borderRadius: '4px', border: 'none', cursor: 'pointer'}} onClick={() => handleEdit(t)}>Edit</button>
+                  <button className="btn-primary btn-sm" style={{width: 'auto'}} onClick={() => handleEdit(t)}>Edit</button>
                   <button 
-                    className="btn-sm" 
-                    style={{
-                      background: t.active ? '#3f3f46' : '#10b981', 
-                      color: 'white',
-                      borderRadius: '4px',
-                      border: 'none',
-                      cursor: 'pointer'
-                    }} 
+                    className="btn-ghost btn-sm" 
                     onClick={() => handleToggleActive(t)}
                   >
                     {t.active ? 'Deactivate' : 'Activate'}
@@ -351,7 +344,7 @@ export default function Templates() {
             ))}
             {templates.length === 0 && (
               <tr>
-                <td colSpan="5" style={{textAlign: 'center', padding: '3rem', color: 'var(--text-muted)'}}>No templates found. Create one to get started.</td>
+                <td colSpan="5" style={{textAlign: 'center', padding: '3rem', color: 'var(--ink-3)'}}>No templates found. Create one to get started.</td>
               </tr>
             )}
           </tbody>
