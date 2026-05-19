@@ -5,6 +5,7 @@ import Templates from './pages/Templates';
 import Logs from './pages/Logs';
 import Analytics from './pages/Analytics';
 import Home from './pages/Home';
+import Docs from './pages/Docs';
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -47,10 +48,20 @@ const NAV_ITEMS = [
       </svg>
     )
   },
+  {
+    href: '/docs', label: 'Docs',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+    )
+  }
 ];
 
 function Layout({ children }) {
   const path = window.location.pathname;
+  const isLoggedIn = !!localStorage.getItem('token');
 
   return (
     <div className="app-shell">
@@ -68,23 +79,35 @@ function Layout({ children }) {
           <div className="dock-divider"/>
 
           <div className="dock-items">
-            {NAV_ITEMS.map(({ href, label, icon }) => (
-              <a key={href} href={href} className={`dock-item${path === href ? ' dock-item--active' : ''}`} data-label={label}>
-                {icon}
-                {path === href && <span className="dock-item-glow"/>}
-              </a>
-            ))}
+            {NAV_ITEMS.map(({ href, label, icon }) => {
+              // Hide authenticated tabs from unauthenticated users if on public docs page
+              if (!isLoggedIn && href !== '/docs') return null;
+              return (
+                <a key={href} href={href} className={`dock-item${path === href ? ' dock-item--active' : ''}`} data-label={label}>
+                  {icon}
+                  {path === href && <span className="dock-item-glow"/>}
+                </a>
+              );
+            })}
           </div>
 
           <div className="dock-divider"/>
 
-          <button className="dock-signout" data-label="Sign Out"
-            onClick={() => { localStorage.removeItem('token'); window.location.href = '/login'; }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-          </button>
+          {isLoggedIn ? (
+            <button className="dock-signout" data-label="Sign Out"
+              onClick={() => { localStorage.removeItem('token'); window.location.href = '/login'; }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+            </button>
+          ) : (
+            <a href="/login" className="dock-signout" data-label="Sign In" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+              </svg>
+            </a>
+          )}
         </nav>
       </div>
 
@@ -101,6 +124,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
+        <Route path="/docs" element={<Layout><Docs /></Layout>} />
         <Route path="/dashboard" element={<PrivateRoute><Layout><Dashboard /></Layout></PrivateRoute>} />
         <Route path="/templates" element={<PrivateRoute><Layout><Templates /></Layout></PrivateRoute>} />
         <Route path="/logs" element={<PrivateRoute><Layout><Logs /></Layout></PrivateRoute>} />
@@ -111,3 +135,4 @@ function App() {
 }
 
 export default App;
+

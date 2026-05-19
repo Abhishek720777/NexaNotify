@@ -782,7 +782,13 @@ export default function Home() {
         <div className="nn-logo" style={{ cursor: 'pointer' }} onClick={() => window.location.href = '/'}>Signal<b>Flow</b></div>
         <ul className="nn-nav-links">
           {["Channels", "Architecture", "Features", "Pricing", "Docs"].map(l => (
-            <li key={l}><a href={`#${l.toLowerCase()}`}>{l}</a></li>
+            <li key={l}>
+              {l === "Docs" ? (
+                <a href="/docs">{l}</a>
+              ) : (
+                <a href={`#${l.toLowerCase()}`}>{l}</a>
+              )}
+            </li>
           ))}
         </ul>
         <div className="nn-nav-end">
