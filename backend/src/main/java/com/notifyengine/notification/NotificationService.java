@@ -47,6 +47,7 @@ public class NotificationService {
 
         String externalUserId = (String) payload.get("userId");
         String eventName = (String) payload.get("event");
+        @SuppressWarnings("unchecked")
         Map<String, Object> data = (Map<String, Object>) payload.get("data");
         String priority = payload.containsKey("priority") ? (String) payload.get("priority") : "LOW";
 

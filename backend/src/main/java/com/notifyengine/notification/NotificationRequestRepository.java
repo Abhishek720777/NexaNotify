@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Repository
 public interface NotificationRequestRepository extends JpaRepository<NotificationRequest, Long> {
