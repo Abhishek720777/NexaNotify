@@ -56,17 +56,21 @@ export default function Templates() {
   const [testModal, setTestModal] = useState(null); // template object being tested
   const [testForm, setTestForm] = useState({ to: '', mockJson: '{"name": "John Doe", "orderId": "ORD-123"}' });
   const [testStatus, setTestStatus] = useState(null); // { type: 'success'|'error', msg }
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchTemplates();
   }, []);
 
   const fetchTemplates = async () => {
+    setLoading(true);
     try {
       const res = await api.get('/templates');
       setTemplates(res.data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -164,6 +168,15 @@ export default function Templates() {
       setTestStatus({ type: 'error', msg: 'Failed to queue test notification.' });
     }
   };
+
+  if (loading) {
+    return (
+      <div className="loader-wrap">
+        <div className="sleek-spinner"></div>
+        <div className="loader-text">Loading message templates...</div>
+      </div>
+    );
+  }
 
   return (
     <div>

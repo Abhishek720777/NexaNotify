@@ -51,6 +51,15 @@ export default function Analytics() {
     return ((sent / total) * 100).toFixed(1);
   };
 
+  if (loading) {
+    return (
+      <div className="loader-wrap">
+        <div className="sleek-spinner"></div>
+        <div className="loader-text">Aggregating real-time charts & delivery stats...</div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ maxWidth: '100%' }}>
       <div className="flex justify-between items-center mb-4">

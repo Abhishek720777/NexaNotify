@@ -8,18 +8,22 @@ export default function Logs() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchLogs();
   }, [date, page]);
 
   const fetchLogs = async () => {
+    setLoading(true);
     try {
       const res = await api.get(`/logs?date=${date}&page=${page}&size=10`);
       setRequests(res.data.content || []);
       setTotalPages(res.data.totalPages || 0);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,6 +51,15 @@ export default function Logs() {
     };
     return `badge ${map[status] || 'info'}`;
   };
+
+  if (loading) {
+    return (
+      <div className="loader-wrap">
+        <div className="sleek-spinner"></div>
+        <div className="loader-text">Loading audit logs & history...</div>
+      </div>
+    );
+  }
 
   return (
     <div>

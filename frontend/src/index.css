@@ -503,3 +503,42 @@ input:focus, select:focus, textarea:focus {
 .mb-4 { margin-bottom: 1rem; }
 .mb-6 { margin-bottom: 1.5rem; }
 
+/* ── Sleek Spinner and Skeleton Loader ── */
+.loader-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  width: 100%;
+  animation: fadeIn 0.3s ease;
+}
+
+.sleek-spinner {
+  width: 46px;
+  height: 46px;
+  border: 3.5px solid rgba(29, 184, 139, 0.12);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: sleekSpin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 14px rgba(29, 184, 139, 0.12);
+}
+
+@keyframes sleekSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.loader-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+  letter-spacing: 0.5px;
+}
+

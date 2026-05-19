@@ -9,12 +9,14 @@ export default function Dashboard() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
   }, [date, page]);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const summaryRes = await api.get(`/analytics/summary?date=${date}`);
       setSummary(summaryRes.data);
@@ -24,6 +26,8 @@ export default function Dashboard() {
       setTotalPages(logsRes.data.totalPages || 0);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -36,6 +40,15 @@ export default function Dashboard() {
     };
     return `badge ${map[status] || 'info'}`;
   };
+
+  if (loading) {
+    return (
+      <div className="loader-wrap">
+        <div className="sleek-spinner"></div>
+        <div className="loader-text">Compiling metrics & sync status...</div>
+      </div>
+    );
+  }
 
   return (
     <div>
