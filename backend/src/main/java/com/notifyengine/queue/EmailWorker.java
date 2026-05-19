@@ -30,7 +30,8 @@ public class EmailWorker {
 
     private void processJob(NotificationJob job) {
         job.setAttemptCount(job.getAttemptCount() + 1);
-        boolean success = emailSender.send(job);
+        String response = emailSender.send(job);
+        boolean success = "Success".equals(response);
 
         NotificationLog dbLog = logRepository.findById(job.getLogId()).orElse(null);
         if (dbLog != null) {
@@ -48,7 +49,7 @@ public class EmailWorker {
                     dbLog.setStatus("RETRYING");
                     queueService.requeueWithBackoff(job);
                 }
-                dbLog.setProviderResponse("Failed");
+                dbLog.setProviderResponse(response);
             }
             logRepository.save(dbLog);
         }

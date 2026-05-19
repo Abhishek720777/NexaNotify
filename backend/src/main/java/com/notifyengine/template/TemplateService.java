@@ -29,7 +29,7 @@ public class TemplateService {
 
     public List<Template> getAllTemplates() {
         Client client = getCurrentClient();
-        return templateRepository.findByClientIdAndIsActiveTrue(client.getId());
+        return templateRepository.findByClientId(client.getId());
     }
 
     @Transactional

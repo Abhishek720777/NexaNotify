@@ -18,7 +18,7 @@ public class EmailSender {
     @org.springframework.beans.factory.annotation.Value("${spring.mail.username}")
     private String mailUsername;
 
-    public boolean send(NotificationJob job) {
+    public String send(NotificationJob job) {
         // MOCK MODE for testing
         if ("test".equals(mailUsername)) {
             log.info("--- MOCK EMAIL START ---");
@@ -26,7 +26,7 @@ public class EmailSender {
             log.info("Body: {}", job.getBody());
             if (job.getAttachmentPath() != null) log.info("Attachment: {}", job.getAttachmentName());
             log.info("--- MOCK EMAIL END ---");
-            return true;
+            return "Success";
         }
         try {
             MimeMessage message = mailSender.createMimeMessage();
@@ -46,10 +46,10 @@ public class EmailSender {
             
             mailSender.send(message);
             log.info("Email sent successfully to {}", job.getTo());
-            return true;
+            return "Success";
         } catch (Exception e) {
             log.error("Failed to send email to {}: {}", job.getTo(), e.getMessage());
-            return false;
+            return e.getMessage() != null ? e.getMessage() : "Unknown SMTP Error";
         }
     }
 }
